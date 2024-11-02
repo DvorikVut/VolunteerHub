@@ -9,4 +9,5 @@ import java.util.List;
 public interface EventUserStatusRepo extends JpaRepository<EventUserStatus, Long> {
     EventUserStatus findByEventIdAndUserId(Long eventId, Long userId);
     List<EventUserStatus> findAllByEventId(Long eventId);
+    List<EventUserStatus> findAllByEventIdAndStatus(Long eventId, Status status);
 }

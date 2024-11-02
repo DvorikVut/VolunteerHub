@@ -2,6 +2,7 @@ package my.pastebin.Feedback;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import my.pastebin.User.User;

@@ -1,6 +1,5 @@
 package my.pastebin.User;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,9 +1,12 @@
 package my.pastebin.Event.dto;
 
+import lombok.Builder;
 import my.pastebin.User.User;
+import my.pastebin.User.dto.UserInfo;
 
 import java.time.LocalDateTime;
 
+@Builder
 public record EventInfoDTO(
         Long id,
         String name,
@@ -15,6 +18,6 @@ public record EventInfoDTO(
         Integer capacity,
         Integer occupiedQuantity,
         Integer price,
-        User creator
+        UserInfo creator
 ) {
 }

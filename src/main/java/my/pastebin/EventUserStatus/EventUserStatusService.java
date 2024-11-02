@@ -7,10 +7,14 @@ import my.pastebin.Event.EventService;
 import my.pastebin.User.Role;
 import my.pastebin.User.User;
 import my.pastebin.User.UserService;
+import my.pastebin.User.dto.UserInfo;
+import my.pastebin.User.dto.UserOnEvent;
 import org.apache.coyote.BadRequestException;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -77,5 +81,24 @@ public class EventUserStatusService {
 
     public Integer getNumberOfUsers(Long eventId) {
         return eventUserStatusRepo.findAllByEventId(eventId).size();
+    }
+
+    public Integer getNumberOfConfirmedUsers(Long eventId){
+         return eventUserStatusRepo.findAllByEventIdAndStatus(eventId, Status.CONFIRMED).size();
+    }
+
+    public Status getEventUserStatus(Long eventId, Long userId) {
+        EventUserStatus eventUserStatus = eventUserStatusRepo.findByEventIdAndUserId(eventId, userId);
+        return eventUserStatus.getStatus();
+    }
+
+    public List<UserOnEvent> getRegisteredUsers(Long eventId) {
+        return eventUserStatusRepo.findAllByEventId(eventId).stream().map(eventUserStatus -> {
+            try {
+                return userService.UserToUserOnEvent(userService.getUserById(eventUserStatus.getUserId()), eventId);
+            } catch (ChangeSetPersister.NotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).toList();
     }
 }

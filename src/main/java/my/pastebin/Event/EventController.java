@@ -1,9 +1,11 @@
 package my.pastebin.Event;
 
+import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
+import my.pastebin.Logger.MyLogger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +21,13 @@ public class EventController {
     private final EventUserStatusService eventUserStatusService;
 
     @PostMapping
-    public ResponseEntity<?> createEvent(NewEventDTO newEventDTO) {
+    public ResponseEntity<?> createEvent(@RequestBody NewEventDTO newEventDTO) {
         return ResponseEntity.ok(eventService.createEvent(newEventDTO));
+    }
+
+    @PostMapping("/test")
+    public String test(){
+        return "hui";
     }
 
     @PostMapping("/register")
@@ -87,19 +94,23 @@ public class EventController {
     }
 
 
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getEvent(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventInfo(id));
     }
 
     @GetMapping("/my")
-    public ResponseEntity<?> getAllUserAsCreatorEvents(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(eventService.getAllUserAsCreatorEvents(user));
+    public ResponseEntity<?> getAllAsCreatorEvents() {
+        return ResponseEntity.ok(eventService.getAllAsCreatorEvents());
     }
 
     @GetMapping
     public ResponseEntity<?> getAllEvents() {
         return ResponseEntity.ok(eventService.getAllEvents());
+    }
+
+    @GetMapping("/users-registered")
+    public ResponseEntity<?> getNumberOfUsers(@RequestBody Long eventId) {
+        return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
     }
 }

@@ -5,6 +5,7 @@ import my.pastebin.Config.JwtService;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserRepo;
 import my.pastebin.User.User;
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,10 +20,10 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest request) {
+    public AuthResponse register(RegisterRequest request) throws BadRequestException {
 
         if(userRepo.findByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new BadRequestException("User with this email already exists");
         }
 
         var user = User.builder()

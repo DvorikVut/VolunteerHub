@@ -1,6 +1,5 @@
 package my.pastebin.Event;
 
-import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.dto.EventInfoDTO;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
@@ -28,7 +27,11 @@ public class EventService {
         this.eventUserStatusService = eventUserStatusService;
     }
 
+
     public Event createEvent(NewEventDTO newEventDTO) {
+
+        System.out.println(userService.getCurrentUser());
+
         var event = Event.builder()
                 .name(newEventDTO.name())
                 .description(newEventDTO.description())
@@ -38,7 +41,7 @@ public class EventService {
                 .city(newEventDTO.city())
                 .address(newEventDTO.address())
                 .creator(userService.getCurrentUser())
-                .price(generateEventPrice(newEventDTO))
+                .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
                 .build();
         return eventRepo.save(event);
     }
@@ -71,33 +74,32 @@ public class EventService {
             event.setStartDateTime(newEventDTO.startDateTime());
             event.setEndDateTime(newEventDTO.endDateTime());
             event.setCity(newEventDTO.city());
-            event.setPrice(generateEventPrice(newEventDTO));
+            event.setPrice(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()));
             eventRepo.save(event);
         }
     }
-
 
     public List<EventInfoDTO> getAllEvents() {
         return eventRepo.findAll().stream().map(this::EventToEventInfoDTO).toList();
     }
 
-    public List<Event> getAllUserAsCreatorEvents(User creator){
-        return eventRepo.findAllByCreatorId(creator.getId());
+    public List<Event> getAllAsCreatorEvents(){
+        return eventRepo.findAllByCreatorId(userService.getCurrentUser().getId());
     }
 
 
-    public Integer generateEventPrice(NewEventDTO newEventDTO) {
+    public Integer generateEventPrice(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int price = 50;
 
-        if(newEventDTO.startDateTime().getDayOfWeek().getValue() > 5) {
+        if(startDateTime.getDayOfWeek().getValue() > 5) {
             price += 10;
         }
 
-        if(newEventDTO.endDateTime().getHour() > 18) {
+        if(endDateTime.getHour() > 18) {
             price += 10;
         }
 
-        if(newEventDTO.startDateTime().isBefore(LocalDateTime.now().plusHours(2))){
+        if(startDateTime.isBefore(LocalDateTime.now().plusHours(2))){
             price += 10;
         }
 
@@ -105,18 +107,18 @@ public class EventService {
     }
 
     public EventInfoDTO EventToEventInfoDTO(Event event) {
-        return new EventInfoDTO(
-                event.getId(),
-                event.getName(),
-                event.getDescription(),
-                event.getCity(),
-                event.getAddress(),
-                event.getStartDateTime(),
-                event.getEndDateTime(),
-                event.getCapacity(),
-                eventUserStatusService.getNumberOfUsers(event.getId()),
-                event.getPrice(),
-                event.getCreator()
-        );
+        return EventInfoDTO.builder()
+                .id(event.getId())
+                .name(event.getName())
+                .description(event.getDescription())
+                .city(event.getCity())
+                .address(event.getAddress())
+                .startDateTime(event.getStartDateTime())
+                .endDateTime(event.getEndDateTime())
+                .capacity(event.getCapacity())
+                .occupiedQuantity(eventUserStatusService.getNumberOfConfirmedUsers(event.getId()))
+                .price(generateEventPrice(event.getStartDateTime(), event.getEndDateTime()))
+                .creator(userService.UserToUserInfo(event.getCreator()))
+                .build();
     }
 }
