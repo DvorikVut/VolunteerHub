@@ -19,13 +19,11 @@ public class RequestLoggerInterceptor implements HandlerInterceptor {
         // Логирование информации о запросе перед обработкой контроллером
         String method = request.getMethod();
         String url = request.getRequestURL().toString();
-        String params = request.getQueryString() != null ? request.getQueryString() : "No params";
-        String ip = request.getRemoteAddr();
 
         // Сохранение времени начала выполнения
         request.setAttribute("startTime", System.currentTimeMillis());
 
-        requestLogger.logRequest(method, url, params, ip);
+        requestLogger.logRequest(method, url);
 
         // Продолжить выполнение
         return true;
