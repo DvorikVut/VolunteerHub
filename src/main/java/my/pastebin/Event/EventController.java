@@ -23,49 +23,32 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<?> createEvent(@RequestBody NewEventDTO newEventDTO) {
-        return ResponseEntity.ok(eventService.createEvent(newEventDTO));
-    }
-
-    @PostMapping("/test")
-    public String test(){
-        return "hui";
+        return ResponseEntity.ok(eventService.create(newEventDTO));
     }
 
     @PostMapping("/register/{eventId}")
     public ResponseEntity<?> registerUserForEvent(@PathVariable Long eventId) {
-        try {
-            eventUserStatusService.registerUserForEvent(eventId);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        eventUserStatusService.registerUserForEvent(eventId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/status-confirm")
     public ResponseEntity<?> changeStatusConfirm(@RequestBody Long eventId, @RequestBody Long userId) {
-        try {
-            eventUserStatusService.changeStatus(eventId, userId, Status.CONFIRMED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        eventUserStatusService.changeStatus(eventId, userId, Status.CONFIRMED);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/status-attended")
     public ResponseEntity<?> changeStatusAttended(@RequestBody Long eventId, @RequestBody Long userId) {
-        try {
-            eventUserStatusService.changeStatus(eventId, userId, Status.ATTENDED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok().build();
+        eventUserStatusService.changeStatus(eventId, userId, Status.ATTENDED);
+        return ResponseEntity.ok("Status was changed successfully");
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<?> changeEvent(@PathVariable Long id, NewEventDTO newEventDTO) {
         try {
-            eventService.changeEvent(id, newEventDTO);
+            eventService.change(id, newEventDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -76,25 +59,18 @@ public class EventController {
     @DeleteMapping
     public ResponseEntity<?> deleteEvent(Long id) {
         try {
-            eventService.deleteEvent(id);
+            eventService.delete(id);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
     }
-
 
     @DeleteMapping("/delete-user")
     public ResponseEntity<?> deleteUserFromEvent(@RequestBody UserEventDTO userEventDTO) {
-        try {
-            eventUserStatusService.deleteUserFromEvent(userEventDTO.eventId(), userEventDTO.userId());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        return ResponseEntity.ok().build();
+        eventUserStatusService.deleteUserFromEvent(userEventDTO.eventId(), userEventDTO.userId());
+        return ResponseEntity.ok("User was deleted successfully from event");
     }
-
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getEvent(@PathVariable Long id) {
@@ -108,7 +84,7 @@ public class EventController {
 
     @GetMapping
     public ResponseEntity<?> getAllEvents() {
-        return ResponseEntity.ok(eventService.getAllEvents());
+        return ResponseEntity.ok(eventService.getAll());
     }
 
     @GetMapping("/users-registered/{eventId}")

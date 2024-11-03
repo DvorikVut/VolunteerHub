@@ -21,8 +21,8 @@ public class UserService {
     private final FeedbackService feedbackService;
     private final UserMapper userMapper;
 
-    public User getUserById(Long id) throws ChangeSetPersister.NotFoundException {
-        return userRepo.findById(id).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    public User getUserById(Long id){
+        return userRepo.getReferenceById(id);
     }
 
     public User getCurrentUser() {

@@ -12,4 +12,5 @@ public interface EventUserStatusRepo extends JpaRepository<EventUserStatus, Long
     List<EventUserStatus> findAllByEventId(Long eventId);
     List<EventUserStatus> findAllByEventIdAndStatus(Long eventId, Status status);
     List<EventUserStatus> findAllByUserId(Long userId);
+    boolean existsByUserIdAndEventId(Long userId ,Long eventId);
 }

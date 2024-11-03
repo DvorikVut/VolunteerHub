@@ -34,7 +34,7 @@ public class EventService {
     }
 
 
-    public Event createEvent(NewEventDTO newEventDTO) {
+    public Event create(NewEventDTO newEventDTO) {
 
         System.out.println(userService.getCurrentUser());
 
@@ -51,16 +51,13 @@ public class EventService {
                 .build();
         return eventRepo.save(event);
     }
-
-    public Event getEvent(Long id) {
+    public Event getById(Long id) {
         return eventRepo.findById(id).orElse(null);
     }
-
     public EventInfoDTO getEventInfo(Long id) {
         return EventToEventInfoDTO(Objects.requireNonNull(eventRepo.findById(id).orElse(null)));
     }
-
-    public void deleteEvent(Long id) throws AccessDeniedException {
+    public void delete(Long id) throws AccessDeniedException {
         var event = eventRepo.findById(id).orElseThrow();
         if(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN)) {
             eventRepo.delete(event);
@@ -68,8 +65,7 @@ public class EventService {
             throw new AccessDeniedException("You are not allowed to delete this event");
         }
     }
-
-    public void changeEvent(Long id, NewEventDTO newEventDTO) throws AccessDeniedException {
+    public void change(Long id, NewEventDTO newEventDTO) throws AccessDeniedException {
         Event event = eventRepo.findById(id).orElseThrow();
         if(!(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN))) {
             throw new AccessDeniedException("You are not allowed to change this event");
@@ -84,16 +80,12 @@ public class EventService {
             eventRepo.save(event);
         }
     }
-
-    public List<EventInfoDTO> getAllEvents() {
+    public List<EventInfoDTO> getAll() {
         return eventRepo.findAll().stream().map(this::EventToEventInfoDTO).toList();
     }
-
     public List<Event> getAllAsCreatorEvents(){
         return eventRepo.findAllByCreatorId(userService.getCurrentUser().getId());
     }
-
-
     public Integer generateEventPrice(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int price = 50;
 
@@ -111,7 +103,6 @@ public class EventService {
 
         return price;
     }
-
     public EventInfoDTO EventToEventInfoDTO(Event event) {
         return EventInfoDTO.builder()
                 .id(event.getId())
@@ -127,14 +118,12 @@ public class EventService {
                 .creator(userService.UserToUserInfo(event.getCreator()))
                 .build();
     }
-
     public List<EventInfoDTO> getFutureEvent() {
         List<Event> events = eventRepo.findAllByStartDateTimeAfter(LocalDateTime.now());
         List<EventInfoDTO> result = events.stream().map(this::EventToEventInfoDTO).toList();
         logger.logInfo(result.toString());
         return result;
     }
-
     public List<EventInfoDTO> getAllAsParticipant() {
         User user = userService.getCurrentUser();
         List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByUserId(user.getId());
