@@ -3,6 +3,7 @@ package my.pastebin.Event;
 import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.dto.NewEventDTO;
+import my.pastebin.Event.dto.UserEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
 import my.pastebin.Logger.MyLogger;
@@ -30,8 +31,8 @@ public class EventController {
         return "hui";
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUserForEvent(@RequestBody Long eventId) {
+    @PostMapping("/register/{eventId}")
+    public ResponseEntity<?> registerUserForEvent(@PathVariable Long eventId) {
         try {
             eventUserStatusService.registerUserForEvent(eventId);
         } catch (Exception e) {
@@ -84,10 +85,11 @@ public class EventController {
 
 
     @DeleteMapping("/delete-user")
-    public ResponseEntity<?> deleteUserFromEvent(@RequestBody Long eventId, @RequestBody Long userId) {
+    public ResponseEntity<?> deleteUserFromEvent(@RequestBody UserEventDTO userEventDTO) {
         try {
-            eventUserStatusService.deleteUserFromEvent(eventId, userId);
+            eventUserStatusService.deleteUserFromEvent(userEventDTO.eventId(), userEventDTO.userId());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         return ResponseEntity.ok().build();
@@ -99,7 +101,7 @@ public class EventController {
         return ResponseEntity.ok(eventService.getEventInfo(id));
     }
 
-    @GetMapping("/my")
+    @GetMapping("/my-as-creator")
     public ResponseEntity<?> getAllAsCreatorEvents() {
         return ResponseEntity.ok(eventService.getAllAsCreatorEvents());
     }
@@ -109,8 +111,18 @@ public class EventController {
         return ResponseEntity.ok(eventService.getAllEvents());
     }
 
-    @GetMapping("/users-registered")
-    public ResponseEntity<?> getNumberOfUsers(@RequestBody Long eventId) {
+    @GetMapping("/users-registered/{eventId}")
+    public ResponseEntity<?> getNumberOfUsers(@PathVariable Long eventId) {
         return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
+    }
+
+    @GetMapping("/future")
+    public ResponseEntity<?> getFutureEvents() {
+        return ResponseEntity.ok(eventService.getFutureEvent());
+    }
+
+    @GetMapping("/my-as-participant")
+    public ResponseEntity<?> getAllAsParticipant(){
+        return ResponseEntity.ok(eventService.getAllAsParticipant());
     }
 }

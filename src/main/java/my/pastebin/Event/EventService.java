@@ -2,10 +2,13 @@ package my.pastebin.Event;
 
 import my.pastebin.Event.dto.EventInfoDTO;
 import my.pastebin.Event.dto.NewEventDTO;
+import my.pastebin.EventUserStatus.EventUserStatus;
 import my.pastebin.EventUserStatus.EventUserStatusService;
+import my.pastebin.Logger.MyLogger;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import my.pastebin.User.User;
@@ -16,15 +19,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+
 public class EventService {
     private final EventRepo eventRepo;
     private final UserService userService;
     private final EventUserStatusService eventUserStatusService;
+    private final MyLogger logger;
 
-    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService) {
+    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService, MyLogger logger) {
         this.eventRepo = eventRepo;
         this.userService = userService;
         this.eventUserStatusService = eventUserStatusService;
+        this.logger = logger;
     }
 
 
@@ -120,5 +126,18 @@ public class EventService {
                 .price(generateEventPrice(event.getStartDateTime(), event.getEndDateTime()))
                 .creator(userService.UserToUserInfo(event.getCreator()))
                 .build();
+    }
+
+    public List<EventInfoDTO> getFutureEvent() {
+        List<Event> events = eventRepo.findAllByStartDateTimeAfter(LocalDateTime.now());
+        List<EventInfoDTO> result = events.stream().map(this::EventToEventInfoDTO).toList();
+        logger.logInfo(result.toString());
+        return result;
+    }
+
+    public List<EventInfoDTO> getAllAsParticipant() {
+        User user = userService.getCurrentUser();
+        List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByUserId(user.getId());
+        return eventUserStatuses.stream().map(eventUserStatus -> getEventInfo(eventUserStatus.getEventId())).toList();
     }
 }

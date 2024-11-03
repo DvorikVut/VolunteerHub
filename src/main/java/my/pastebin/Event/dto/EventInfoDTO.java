@@ -1,7 +1,6 @@
 package my.pastebin.Event.dto;
 
 import lombok.Builder;
-import my.pastebin.User.User;
 import my.pastebin.User.dto.UserInfo;
 
 import java.time.LocalDateTime;

@@ -64,7 +64,7 @@ public class EventUserStatusService {
         Event event = eventService.getEvent(eventId);
         User creator = event.getCreator();
 
-        if(!creator.equals(userService.getCurrentUser()) || userService.getCurrentUser().getRole().equals(Role.ADMIN) || !userService.getUserById(userId).equals(userService.getCurrentUser())) {
+        if(!(creator.equals(userService.getCurrentUser()) || userService.getCurrentUser().getRole().equals(Role.ADMIN) || userService.getUserById(userId).equals(userService.getCurrentUser()))) {
             throw new AccessDeniedException("Only creator, admin or user itself can delete users from event");
         }
 
@@ -100,5 +100,9 @@ public class EventUserStatusService {
                 throw new RuntimeException(e);
             }
         }).toList();
+    }
+
+    public List<EventUserStatus> getAllByUserId(Long userId){
+        return eventUserStatusRepo.findAllByUserId(userId);
     }
 }
