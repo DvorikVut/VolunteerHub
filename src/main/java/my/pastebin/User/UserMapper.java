@@ -16,17 +16,6 @@ public class UserMapper {
         this.eventUserStatusService = eventUserStatusService;
     }
 
-    public User mapToUserInfo(UserInfo userInfo) {
-        return User.builder()
-                .id(userInfo.id())
-                .name(userInfo.name())
-                .surname(userInfo.surname())
-                .email(userInfo.email())
-                .points(userInfo.points())
-                .pointAsCreator(userInfo.pointAsCreator())
-                .build();
-    }
-
     public UserInfo mapToUserInfo(User user) {
         return UserInfo.builder()
                 .id(user.getId())
