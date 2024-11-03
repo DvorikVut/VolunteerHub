@@ -23,8 +23,8 @@ public class MyLogger {
         logger.error(message, throwable);
     }
 
-    public void logRequest(String method, String url, String params, String ip) {
-        logger.info("Received request: Method = {}, URL = {}, Params = {}, IP = {}", method, url, params, ip);
+    public void logRequest(String method, String url) {
+        logger.info("Received request: Method = {}, URL = {}", method, url);
     }
 
     public void logResponse(String url, int statusCode, long executionTime) {
