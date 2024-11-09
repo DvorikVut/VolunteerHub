@@ -20,23 +20,25 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-
 public class EventService {
+
     private final EventRepo eventRepo;
     private final UserService userService;
     private final EventUserStatusService eventUserStatusService;
-    private final MyLogger logger;
 
-    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService, MyLogger logger) {
+    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService) {
         this.eventRepo = eventRepo;
         this.userService = userService;
         this.eventUserStatusService = eventUserStatusService;
-        this.logger = logger;
     }
 
-
+    /**
+     * Creates a new event based on the provided DTO.
+     *
+     * @param newEventDTO the DTO containing event details
+     * @return the created event
+     */
     public Event create(NewEventDTO newEventDTO) {
-
         System.out.println(userService.getCurrentUser());
 
         var event = Event.builder()
@@ -52,57 +54,115 @@ public class EventService {
                 .build();
         return eventRepo.save(event);
     }
+
+    /**
+     * Retrieves an event by its ID.
+     *
+     * @param id the ID of the event
+     * @return the event if found, otherwise null
+     */
     public Event getById(Long id) {
         return eventRepo.findById(id).orElse(null);
     }
+
+    /**
+     * Retrieves detailed information about an event.
+     *
+     * @param id the ID of the event
+     * @return a DTO containing the event details
+     */
     public EventInfoDTO getEventInfo(Long id) {
         return EventToEventInfoDTO(Objects.requireNonNull(eventRepo.findById(id).orElse(null)));
     }
-    public void delete(Long id){
+
+    /**
+     * Deletes an event if the current user is authorized.
+     *
+     * @param id the ID of the event to delete
+     * @throws NotAuthorizedException if the user is not authorized to delete the event
+     */
+    public void delete(Long id) {
         var event = eventRepo.findById(id).orElseThrow();
-        if(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN)) {
+        if (event.getCreator().getId().equals(userService.getCurrentUser().getId()) ||
+                userService.getCurrentUser().getRole().equals(Role.ADMIN)) {
             eventRepo.delete(event);
         } else {
             throw new NotAuthorizedException("You are not allowed to delete this event");
         }
     }
+
+    /**
+     * Updates an existing event with new details.
+     *
+     * @param id the ID of the event to update
+     * @param newEventDTO the new details for the event
+     * @throws NotAuthorizedException if the user is not authorized to modify the event
+     */
     public void change(Long id, NewEventDTO newEventDTO) {
         Event event = eventRepo.findById(id).orElseThrow();
-        if(!(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN))) {
+        if (!(event.getCreator().getId().equals(userService.getCurrentUser().getId()) ||
+                userService.getCurrentUser().getRole().equals(Role.ADMIN))) {
             throw new NotAuthorizedException("You are not allowed to change this event");
         }
-            event.setName(newEventDTO.name());
-            event.setDescription(newEventDTO.description());
-            event.setCapacity(newEventDTO.capacity());
-            event.setStartDateTime(newEventDTO.startDateTime());
-            event.setEndDateTime(newEventDTO.endDateTime());
-            event.setCity(newEventDTO.city());
-            event.setPrice(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()));
-            eventRepo.save(event);
+        event.setName(newEventDTO.name());
+        event.setDescription(newEventDTO.description());
+        event.setCapacity(newEventDTO.capacity());
+        event.setStartDateTime(newEventDTO.startDateTime());
+        event.setEndDateTime(newEventDTO.endDateTime());
+        event.setCity(newEventDTO.city());
+        event.setPrice(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()));
+        eventRepo.save(event);
     }
+
+    /**
+     * Retrieves all events.
+     *
+     * @return a list of all events as DTOs
+     */
     public List<EventInfoDTO> getAll() {
         return eventRepo.findAll().stream().map(this::EventToEventInfoDTO).toList();
     }
-    public List<Event> getAllAsCreatorEvents(){
+
+    /**
+     * Retrieves all events created by the current user.
+     *
+     * @return a list of events created by the user
+     */
+    public List<Event> getAllAsCreatorEvents() {
         return eventRepo.findAllByCreatorId(userService.getCurrentUser().getId());
     }
+
+    /**
+     * Generates the price for an event based on its timing.
+     *
+     * @param startDateTime the start time of the event
+     * @param endDateTime the end time of the event
+     * @return the calculated price
+     */
     public Integer generateEventPrice(LocalDateTime startDateTime, LocalDateTime endDateTime) {
         int price = 50;
 
-        if(startDateTime.getDayOfWeek().getValue() > 5) {
+        if (startDateTime.getDayOfWeek().getValue() > 5) {
             price += 10;
         }
 
-        if(endDateTime.getHour() > 18) {
+        if (endDateTime.getHour() > 18) {
             price += 10;
         }
 
-        if(startDateTime.isBefore(LocalDateTime.now().plusHours(2))){
+        if (startDateTime.isBefore(LocalDateTime.now().plusHours(2))) {
             price += 10;
         }
 
         return price;
     }
+
+    /**
+     * Converts an Event entity to an EventInfoDTO.
+     *
+     * @param event the event entity
+     * @return the corresponding DTO
+     */
     public EventInfoDTO EventToEventInfoDTO(Event event) {
         return EventInfoDTO.builder()
                 .id(event.getId())
@@ -118,12 +178,24 @@ public class EventService {
                 .creator(userService.UserToUserInfo(event.getCreator()))
                 .build();
     }
+
+    /**
+     * Retrieves all future events.
+     *
+     * @return a list of future events as DTOs
+     */
     public List<EventInfoDTO> getFutureEvent() {
         List<Event> events = eventRepo.findAllByStartDateTimeAfter(LocalDateTime.now());
         List<EventInfoDTO> result = events.stream().map(this::EventToEventInfoDTO).toList();
-        logger.logInfo(result.toString());
+        MyLogger.logInfo(result.toString());
         return result;
     }
+
+    /**
+     * Retrieves all events where the current user is a participant.
+     *
+     * @return a list of events as DTOs
+     */
     public List<EventInfoDTO> getAllAsParticipant() {
         User user = userService.getCurrentUser();
         List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByUserId(user.getId());
