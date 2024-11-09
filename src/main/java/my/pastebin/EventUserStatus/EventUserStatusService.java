@@ -36,7 +36,6 @@ public class EventUserStatusService {
         eventUserStatus.setStatus(status);
         eventUserStatusRepo.save(eventUserStatus);
     }
-
     public void registerUserForEvent(Long eventId){
         Event event = eventService.getById(eventId);
 
@@ -65,9 +64,8 @@ public class EventUserStatusService {
 
         EventUserStatus eventUserStatus = eventUserStatusRepo.findByEventIdAndUserId(eventId, userId);
 
-        if(eventUserStatus == null) {
+        if(eventUserStatus == null)
             throw new ResourceNotFoundException("User is not registered for this event");
-        }
 
         eventUserStatusRepo.delete(eventUserStatus);
     }

@@ -32,21 +32,21 @@ public class EventController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/status-confirm")
-    public ResponseEntity<?> changeStatusConfirm(@RequestBody Long eventId, @RequestBody Long userId) {
+    @PostMapping("/status-confirm/{eventId}/{userId}")
+    public ResponseEntity<?> changeStatusConfirm(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.CONFIRMED);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/status-attended")
-    public ResponseEntity<?> changeStatusAttended(@RequestBody Long eventId, @RequestBody Long userId) {
+    @PostMapping("/status-attended/{eventId}/{userId}")
+    public ResponseEntity<?> changeStatusAttended(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.ATTENDED);
         return ResponseEntity.ok("Status was changed successfully");
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> changeEvent(@PathVariable Long id, NewEventDTO newEventDTO) {
+    public ResponseEntity<?> changeEvent(@PathVariable Long id, @RequestBody NewEventDTO newEventDTO) {
         try {
             eventService.change(id, newEventDTO);
         } catch (Exception e) {
@@ -91,7 +91,6 @@ public class EventController {
     public ResponseEntity<?> getNumberOfUsers(@PathVariable Long eventId) {
         return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
     }
-
     @GetMapping("/future")
     public ResponseEntity<?> getFutureEvents() {
         return ResponseEntity.ok(eventService.getFutureEvent());

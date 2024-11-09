@@ -19,8 +19,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class SecurityConfig {
 
     @Value("${frontend.url}")
-    private String frontEndUrl;
 
+    private String frontEndUrl;
     private final JwtAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
@@ -33,7 +33,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/login/**").permitAll()
                         .requestMatchers("/api/**").permitAll()
-                        .requestMatchers("/post/link/**").permitAll()
                         .requestMatchers("/welcome/**").permitAll()
                         .anyRequest().authenticated()
                 )
