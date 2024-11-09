@@ -7,13 +7,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class RequestLoggerInterceptor implements HandlerInterceptor {
-
-    private final MyLogger requestLogger;
-
-    public RequestLoggerInterceptor(MyLogger requestLogger) {
-        this.requestLogger = requestLogger;
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // Логирование информации о запросе перед обработкой контроллером
@@ -23,7 +16,7 @@ public class RequestLoggerInterceptor implements HandlerInterceptor {
         // Сохранение времени начала выполнения
         request.setAttribute("startTime", System.currentTimeMillis());
 
-        requestLogger.logRequest(method, url);
+        MyLogger.logRequest(method, url);
 
         // Продолжить выполнение
         return true;
@@ -38,6 +31,6 @@ public class RequestLoggerInterceptor implements HandlerInterceptor {
         long startTime = (Long) request.getAttribute("startTime");
         long executionTime = System.currentTimeMillis() - startTime;
 
-        requestLogger.logResponse(url, status, executionTime);
+        MyLogger.logResponse(url, status, executionTime);
     }
 }
