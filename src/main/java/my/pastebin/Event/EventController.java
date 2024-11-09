@@ -1,17 +1,12 @@
 package my.pastebin.Event;
 
-import ch.qos.logback.classic.Logger;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.Event.dto.UserEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
-import my.pastebin.Logger.MyLogger;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import my.pastebin.User.User;
 
 @RestController
 @RequiredArgsConstructor
