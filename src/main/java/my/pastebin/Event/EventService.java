@@ -4,6 +4,7 @@ import my.pastebin.Event.dto.EventInfoDTO;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatus;
 import my.pastebin.EventUserStatus.EventUserStatusService;
+import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Logger.MyLogger;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
@@ -57,19 +58,19 @@ public class EventService {
     public EventInfoDTO getEventInfo(Long id) {
         return EventToEventInfoDTO(Objects.requireNonNull(eventRepo.findById(id).orElse(null)));
     }
-    public void delete(Long id) throws AccessDeniedException {
+    public void delete(Long id){
         var event = eventRepo.findById(id).orElseThrow();
         if(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN)) {
             eventRepo.delete(event);
         } else {
-            throw new AccessDeniedException("You are not allowed to delete this event");
+            throw new NotAuthorizedException("You are not allowed to delete this event");
         }
     }
-    public void change(Long id, NewEventDTO newEventDTO) throws AccessDeniedException {
+    public void change(Long id, NewEventDTO newEventDTO) {
         Event event = eventRepo.findById(id).orElseThrow();
         if(!(event.getCreator().getId().equals(userService.getCurrentUser().getId()) || userService.getCurrentUser().getRole().equals(Role.ADMIN))) {
-            throw new AccessDeniedException("You are not allowed to change this event");
-        } else {
+            throw new NotAuthorizedException("You are not allowed to change this event");
+        }
             event.setName(newEventDTO.name());
             event.setDescription(newEventDTO.description());
             event.setCapacity(newEventDTO.capacity());
@@ -78,7 +79,6 @@ public class EventService {
             event.setCity(newEventDTO.city());
             event.setPrice(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()));
             eventRepo.save(event);
-        }
     }
     public List<EventInfoDTO> getAll() {
         return eventRepo.findAll().stream().map(this::EventToEventInfoDTO).toList();
