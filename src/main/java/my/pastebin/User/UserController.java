@@ -16,4 +16,9 @@ public class UserController {
     public ResponseEntity<UserInfo> getProfile() {
         return userService.getCurrentUserInfo();
     }
+
+    @GetMapping("/top100")
+    public ResponseEntity<?> getTop100UserByPoints(){
+        return ResponseEntity.ok(userService.getTop100ByPoints());
+    }
 }

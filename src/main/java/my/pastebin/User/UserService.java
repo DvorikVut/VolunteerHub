@@ -7,11 +7,14 @@ import my.pastebin.Feedback.Feedback;
 import my.pastebin.Feedback.FeedbackService;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserOnEvent;
+import my.pastebin.User.dto.UserTopInfo;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +58,16 @@ public class UserService {
 
     public ResponseEntity<UserInfo> getCurrentUserInfo() {
         return ResponseEntity.ok(userMapper.mapToUserInfo(getCurrentUser()));
+    }
+
+    public List<UserTopInfo> getTop100ByPoints() {
+        List<User> users = userRepo.findTop100ByOrderByPointsDesc();
+        return users.stream()
+                .map(user -> UserTopInfo.builder()
+                        .name(user.getName())
+                        .email(user.getEmail())
+                        .points(user.getPoints())
+                        .build())
+                .toList();
     }
 }
