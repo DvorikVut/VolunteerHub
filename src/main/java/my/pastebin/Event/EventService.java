@@ -52,6 +52,7 @@ public class EventService {
                 .creator(userService.getCurrentUser())
                 .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
                 .build();
+        MyLogger.logInfo("Event with name " + event.getName() + " created");
         return eventRepo.save(event);
     }
 
@@ -101,9 +102,12 @@ public class EventService {
     public void change(Long id, NewEventDTO newEventDTO) {
         Event event = eventRepo.findById(id).orElseThrow();
         if (!(event.getCreator().getId().equals(userService.getCurrentUser().getId()) ||
-                userService.getCurrentUser().getRole().equals(Role.ADMIN))) {
+                userService.getCurrentUser().getRole().equals(Role.ADMIN))){
+
+            MyLogger.logInfo("User with ID " + userService.getCurrentUser().getId() + " is not allowed to change event with ID " + id);
             throw new NotAuthorizedException("You are not allowed to change this event");
         }
+
         event.setName(newEventDTO.name());
         event.setDescription(newEventDTO.description());
         event.setCapacity(newEventDTO.capacity());
@@ -112,6 +116,7 @@ public class EventService {
         event.setCity(newEventDTO.city());
         event.setPrice(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()));
         eventRepo.save(event);
+
     }
 
     /**
@@ -186,9 +191,7 @@ public class EventService {
      */
     public List<EventInfoDTO> getFutureEvent() {
         List<Event> events = eventRepo.findAllByStartDateTimeAfter(LocalDateTime.now());
-        List<EventInfoDTO> result = events.stream().map(this::EventToEventInfoDTO).toList();
-        MyLogger.logInfo(result.toString());
-        return result;
+        return events.stream().map(this::EventToEventInfoDTO).toList();
     }
 
     /**
