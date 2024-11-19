@@ -5,7 +5,10 @@
 .project
 .settings
 
+
 .DS_STORE
+
+/src/main/resources
 
 # Package Files #
 *.jar
