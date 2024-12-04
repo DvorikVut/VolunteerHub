@@ -41,4 +41,17 @@ public class MessageController {
     public ResponseEntity<?> getByReceiverId(@PathVariable Long receiverId){
         return ResponseEntity.ok(messageService.getAllByReceiverId(receiverId));
     }
+
+    @Operation(summary = "Delete a message")
+    @DeleteMapping("/{messageId}")
+    public ResponseEntity<?> deleteMessage(@PathVariable Long messageId){
+        messageService.delete(messageService.getById(messageId));
+        return ResponseEntity.ok("Message was deleted successfully");
+    }
+
+    @Operation(summary = "Get all messages between two users")
+    @GetMapping("/{senderId}/{receiverId}")
+    public ResponseEntity<?> getBySenderIdAndReceiverId(@PathVariable Long senderId, @PathVariable Long receiverId){
+        return ResponseEntity.ok(messageService.getAllBySenderIdAndReceiverId(senderId, receiverId));
+    }
 }

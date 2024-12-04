@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import my.pastebin.Chat.dto.MessageInfoDTO;
 import my.pastebin.Chat.dto.MessageInfoDTOMapper;
 import my.pastebin.Chat.dto.NewMessageDTO;
+import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Exceptions.ResourceNotFoundException;
+import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +46,9 @@ public class MessageService {
 
     public void delete(Message message){
         checkIfExists(message.getId());
+        if(!message.getSenderId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN)){
+            throw new NotAuthorizedException("You are not allowed to delete this message");
+        }
         messageRepository.delete(message);
     }
 
@@ -59,5 +64,9 @@ public class MessageService {
 
     public List<Message> getAllByReceiverId(Long receiverId) {
         return messageRepository.findAllByRecipientId(receiverId);
+    }
+
+    public List<Message> getAllBySenderIdAndReceiverId(Long senderId, Long receiverId) {
+        return messageRepository.findAllBySenderIdAndRecipientId(senderId, receiverId);
     }
 }
