@@ -11,11 +11,15 @@ import my.pastebin.Logger.MyLogger;
 import my.pastebin.User.Role;
 import my.pastebin.User.User;
 import my.pastebin.User.UserService;
+import my.pastebin.User.dto.UserInfo;
+import my.pastebin.User.dto.UserInfoDTOMapper;
 import my.pastebin.User.dto.UserOnEvent;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class EventUserStatusService {
     private final EventUserStatusRepo eventUserStatusRepo;
     private final EventService eventService;
     private final UserService userService;
+    private final UserInfoDTOMapper userInfoDTOMapper;
 
     /**
      * Changes the status of a user for a specific event.
@@ -135,8 +140,11 @@ public class EventUserStatusService {
      * @param eventId the ID of the event
      * @return a number of users registered for the event
      */
-    public Integer getRegisteredUsers(Long eventId) {
-        return eventUserStatusRepo.findAllByEventId(eventId).size();
+    public List<UserInfo> getRegisteredUsers(Long eventId) {
+        return eventUserStatusRepo.findAllByEventId(eventId).
+                stream()
+                .map(eventUserStatus -> userInfoDTOMapper.apply(userService.getUserById(eventUserStatus.getUserId())))
+                .collect(Collectors.toList());
     }
 
     /**
