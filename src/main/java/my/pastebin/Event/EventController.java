@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/event")
-@Tag(name = "Event", description = "Operations related to events")
+@Tag(name = "EventController", description = "Operations related to events")
 public class EventController {
 
     private final EventService eventService;
@@ -32,8 +32,8 @@ public class EventController {
      * @param newEventDTO the DTO containing the event details
      * @return the created event
      */
-    @PostMapping
     @Operation(summary = "Create a new event")
+    @PostMapping
     public ResponseEntity<String> createEvent(@RequestBody NewEventDTO newEventDTO) {
         eventService.create(newEventDTO);
         return ResponseEntity.ok("Event was created successfully");
@@ -45,6 +45,9 @@ public class EventController {
      * @param eventId the ID of the event
      * @return response confirming the registration
      */
+
+
+    @Operation(summary = "Register a user for an event")
     @PostMapping("/register/{eventId}")
     public ResponseEntity<String> registerUserForEvent(@PathVariable Long eventId) {
         eventUserStatusService.registerUserForEvent(eventId);
@@ -58,6 +61,7 @@ public class EventController {
      * @param userId the ID of the user
      * @return response confirming the status change
      */
+    @Operation(summary = "Change the status of a user in an event to CONFIRMED")
     @PostMapping("/status-confirm/{eventId}/{userId}")
     public ResponseEntity<String> changeStatusConfirm(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.CONFIRMED);
@@ -71,6 +75,7 @@ public class EventController {
      * @param userId the ID of the user
      * @return response confirming the status change
      */
+    @Operation(summary = "Change the status of a user in an event to ATTENDED")
     @PostMapping("/status-attended/{eventId}/{userId}")
     public ResponseEntity<String> changeStatusAttended(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.ATTENDED);
@@ -84,6 +89,7 @@ public class EventController {
      * @param newEventDTO the new details for the event
      * @return response confirming the update
      */
+    @Operation(summary = "Update an event's details")
     @PutMapping("/{id}")
     public ResponseEntity<String> changeEvent(@PathVariable Long id, @RequestBody NewEventDTO newEventDTO) {
         eventService.change(id, newEventDTO);
@@ -96,6 +102,7 @@ public class EventController {
      * @param id the ID of the event to delete
      * @return response confirming the deletion
      */
+    @Operation(summary = "Delete an event")
     @DeleteMapping
     public ResponseEntity<String> deleteEvent(Long id) {
         eventService.delete(id);
@@ -108,6 +115,7 @@ public class EventController {
      * @param userEventDTO DTO containing event and user IDs
      * @return response confirming the deletion
      */
+    @Operation(summary = "Delete a user from an event")
     @DeleteMapping("/delete-user")
     public ResponseEntity<String> deleteUserFromEvent(@RequestBody UserEventDTO userEventDTO) {
         eventUserStatusService.deleteUserFromEvent(userEventDTO.eventId(), userEventDTO.userId());
@@ -120,6 +128,7 @@ public class EventController {
      * @param id the ID of the event
      * @return the event details
      */
+    @Operation(summary = "Get information about an event")
     @GetMapping("/{id}")
     public ResponseEntity<EventInfoDTO> getEvent(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventInfo(id));
@@ -130,6 +139,7 @@ public class EventController {
      *
      * @return a list of events
      */
+    @Operation(summary = "Get all events created by the authenticated user")
     @GetMapping("/my-as-creator")
     public ResponseEntity<List<EventInfoDTO>> getAllAsCreatorEvents() {
         return ResponseEntity.ok(eventService.getAllAsCreatorEvents());
@@ -140,6 +150,7 @@ public class EventController {
      *
      * @return a list of all events
      */
+    @Operation(summary = "Get all events")
     @GetMapping
     public ResponseEntity<List<EventInfoDTO>> getAllEvents() {
         return ResponseEntity.ok(eventService.getAll());
@@ -151,8 +162,9 @@ public class EventController {
      * @param eventId the ID of the event
      * @return the number of registered users
      */
+    @Operation(summary = "Get the number of registered users for an event")
     @GetMapping("/users-registered/{eventId}")
-    public ResponseEntity<List<UserOnEvent>> getNumberOfUsers(@PathVariable Long eventId) {
+    public ResponseEntity<Integer> getNumberOfUsers(@PathVariable Long eventId) {
         return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
     }
 
@@ -161,6 +173,7 @@ public class EventController {
      *
      * @return a list of future events
      */
+    @Operation(summary = "Get all future events")
     @GetMapping("/future")
     public ResponseEntity<List<EventInfoDTO>> getFutureEvents() {
         return ResponseEntity.ok(eventService.getFutureEvent());
@@ -171,6 +184,7 @@ public class EventController {
      *
      * @return a list of events
      */
+    @Operation(summary = "Get all events where the authenticated user is a participant")
     @GetMapping("/my-as-participant")
     public ResponseEntity<List<EventInfoDTO>> getAllAsParticipant(){
         return ResponseEntity.ok(eventService.getAllAsParticipant());
