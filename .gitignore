@@ -17,5 +17,7 @@
 
 # IDEA files #
 
+.env
+
 *.iml
 *.idea
