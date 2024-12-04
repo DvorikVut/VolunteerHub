@@ -39,8 +39,6 @@ public class EventService {
      * @return the created event
      */
     public Event create(NewEventDTO newEventDTO) {
-        System.out.println(userService.getCurrentUser());
-
         var event = Event.builder()
                 .name(newEventDTO.name())
                 .description(newEventDTO.description())

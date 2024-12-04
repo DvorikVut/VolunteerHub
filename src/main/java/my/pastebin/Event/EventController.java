@@ -1,5 +1,9 @@
 package my.pastebin.Event;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.Event.dto.UserEventDTO;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/event")
+@Tag(name = "Event", description = "Operations related to events")
 public class EventController {
 
     private final EventService eventService;
@@ -23,6 +28,8 @@ public class EventController {
      * @return the created event
      */
     @PostMapping
+    @Operation(summary = "Create a new event")
+    @ApiResponse(responseCode = "200", description = "Event was created successfully")
     public ResponseEntity<?> createEvent(@RequestBody NewEventDTO newEventDTO) {
         return ResponseEntity.ok(eventService.create(newEventDTO));
     }
