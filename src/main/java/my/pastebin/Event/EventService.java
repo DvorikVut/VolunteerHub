@@ -1,6 +1,7 @@
 package my.pastebin.Event;
 
 import my.pastebin.Event.dto.EventInfoDTO;
+import my.pastebin.Event.dto.EventInfoDTOMapper;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatus;
 import my.pastebin.EventUserStatus.EventUserStatusService;
@@ -18,6 +19,8 @@ import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -25,11 +28,13 @@ public class EventService {
     private final EventRepo eventRepo;
     private final UserService userService;
     private final EventUserStatusService eventUserStatusService;
+    private final EventInfoDTOMapper eventInfoDTOMapper;
 
-    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService) {
+    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService, EventInfoDTOMapper eventInfoDTOMapper) {
         this.eventRepo = eventRepo;
         this.userService = userService;
         this.eventUserStatusService = eventUserStatusService;
+        this.eventInfoDTOMapper = eventInfoDTOMapper;
     }
 
     /**
@@ -71,7 +76,7 @@ public class EventService {
      * @return a DTO containing the event details
      */
     public EventInfoDTO getEventInfo(Long id) {
-        return EventToEventInfoDTO(Objects.requireNonNull(eventRepo.findById(id).orElse(null)));
+        return eventInfoDTOMapper.apply(Objects.requireNonNull(eventRepo.findById(id).orElse(null)));
     }
 
     /**
@@ -123,7 +128,7 @@ public class EventService {
      * @return a list of all events as DTOs
      */
     public List<EventInfoDTO> getAll() {
-        return eventRepo.findAll().stream().map(this::EventToEventInfoDTO).toList();
+        return eventRepo.findAll().stream().map(eventInfoDTOMapper).toList();
     }
 
     /**
@@ -131,8 +136,11 @@ public class EventService {
      *
      * @return a list of events created by the user
      */
-    public List<Event> getAllAsCreatorEvents() {
-        return eventRepo.findAllByCreatorId(userService.getCurrentUser().getId());
+    public List<EventInfoDTO> getAllAsCreatorEvents() {
+        return eventRepo.findAllByCreatorId(userService.getCurrentUser().getId())
+                .stream()
+                .map(eventInfoDTOMapper)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -159,29 +167,6 @@ public class EventService {
 
         return price;
     }
-
-    /**
-     * Converts an Event entity to an EventInfoDTO.
-     *
-     * @param event the event entity
-     * @return the corresponding DTO
-     */
-    public EventInfoDTO EventToEventInfoDTO(Event event) {
-        return EventInfoDTO.builder()
-                .id(event.getId())
-                .name(event.getName())
-                .description(event.getDescription())
-                .city(event.getCity())
-                .address(event.getAddress())
-                .startDateTime(event.getStartDateTime())
-                .endDateTime(event.getEndDateTime())
-                .capacity(event.getCapacity())
-                .occupiedQuantity(eventUserStatusService.getNumberOfConfirmedUsers(event.getId()))
-                .price(generateEventPrice(event.getStartDateTime(), event.getEndDateTime()))
-                .creator(userService.UserToUserInfo(event.getCreator()))
-                .build();
-    }
-
     /**
      * Retrieves all future events.
      *
@@ -189,7 +174,7 @@ public class EventService {
      */
     public List<EventInfoDTO> getFutureEvent() {
         List<Event> events = eventRepo.findAllByStartDateTimeAfter(LocalDateTime.now());
-        return events.stream().map(this::EventToEventInfoDTO).toList();
+        return events.stream().map(eventInfoDTOMapper).toList();
     }
 
     /**
