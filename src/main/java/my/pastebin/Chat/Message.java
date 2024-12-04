@@ -19,5 +19,5 @@ public class Message {
     private Long recipientId;
     private String content;
     private LocalDateTime sentAt;
-    private Boolean read;
+    private Boolean isRead;
 }

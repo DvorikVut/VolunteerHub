@@ -15,7 +15,7 @@ public class MessageInfoDTOMapper implements Function<Message,MessageInfoDTO> {
                 message.getRecipientId(),
                 message.getContent(),
                 message.getSentAt(),
-                message.getRead()
+                message.getIsRead()
         );
     }
 }

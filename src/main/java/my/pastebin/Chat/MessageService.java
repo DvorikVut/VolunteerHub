@@ -24,7 +24,7 @@ public class MessageService {
                 .recipientId(newMessageDTO.recipientId())
                 .content(newMessageDTO.content())
                 .sentAt(LocalDateTime.now())
-                .read(false)
+                .isRead(false)
                 .build();
         save(message);
     }
