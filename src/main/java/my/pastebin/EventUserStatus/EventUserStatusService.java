@@ -138,12 +138,17 @@ public class EventUserStatusService {
      * Retrieves all users registered for a specific event as DTOs.
      *
      * @param eventId the ID of the event
-     * @return a number of users registered for the event
+     * @return users registered for the event
      */
-    public List<UserInfo> getRegisteredUsers(Long eventId) {
-        return eventUserStatusRepo.findAllByEventId(eventId).
-                stream()
-                .map(eventUserStatus -> userInfoDTOMapper.apply(userService.getUserById(eventUserStatus.getUserId())))
+    public List<UserOnEvent> getRegisteredUsers(Long eventId) {
+        return eventUserStatusRepo.findAllByEventId(eventId).stream()
+                .map(eventUserStatus -> UserOnEvent.builder()
+                        .id(eventUserStatus.getUserId())
+                        .name(userService.getUserById(eventUserStatus.getUserId()).getName())
+                        .surname(userService.getUserById(eventUserStatus.getUserId()).getSurname())
+                        .imageURL(userService.getUserById(eventUserStatus.getUserId()).getImageURL())
+                        .status(eventUserStatus.getStatus())
+                        .build())
                 .collect(Collectors.toList());
     }
 
