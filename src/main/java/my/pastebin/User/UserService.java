@@ -3,16 +3,16 @@ package my.pastebin.User;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Feedback.Feedback;
 import my.pastebin.Feedback.FeedbackService;
+import my.pastebin.S3.S3Service;
+import my.pastebin.User.dto.UpdateUserDTO;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserInfoDTOMapper;
-import my.pastebin.User.dto.UserOnEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +20,8 @@ public class UserService {
 
     private final UserRepo userRepo;
     private final FeedbackService feedbackService;
-    private final UserMapper userMapper;
     private final UserInfoDTOMapper userInfoDTOMapper;
+    private final S3Service s3Service;
 
     /**
      * Retrieves a user by their ID.
@@ -77,7 +77,7 @@ public class UserService {
      * @return the UserInfo DTO of the currently authenticated user
      */
     public ResponseEntity<UserInfo> getCurrentUserInfo() {
-        return ResponseEntity.ok(userMapper.mapToUserInfo(getCurrentUser()));
+        return ResponseEntity.ok(userInfoDTOMapper.apply(getCurrentUser()));
     }
 
     /**
@@ -90,5 +90,18 @@ public class UserService {
         return users.stream()
                 .map(userInfoDTOMapper)
                 .toList();
+    }
+
+    public void update(Long id, UpdateUserDTO updateUserDTO){
+        User user = getUserById(id);
+        if(updateUserDTO.image() != null){
+            String key = s3Service.uploadImage(updateUserDTO.image());
+            user.setImageURL(key);
+            user.setS3ImageKey(key);
+        }
+
+        user.setName(updateUserDTO.name());
+        user.setSurname(updateUserDTO.surname());
+        userRepo.save(user);
     }
 }
