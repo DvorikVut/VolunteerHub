@@ -1,5 +1,7 @@
 package my.pastebin.Auth;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -15,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "AuthController", description = "Operations related to authentication")
 public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "Register a new user")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request){
         try {
@@ -28,6 +32,7 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Authenticate a user")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> authenticate(@RequestBody AuthRequest request){
         return ResponseEntity.ok(authService.authenticate(request));
