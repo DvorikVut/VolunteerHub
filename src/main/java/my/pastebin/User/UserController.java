@@ -3,11 +3,10 @@ package my.pastebin.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import my.pastebin.User.dto.UpdateUserDTO;
 import my.pastebin.User.dto.UserInfo;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +27,12 @@ public class UserController {
     @GetMapping("/top100")
     public ResponseEntity<List<UserInfo>> getTop100UserByPoints(){
         return ResponseEntity.ok(userService.getTop100ByPoints());
+    }
+
+    @Operation(summary = "Update the profile of the user")
+    @GetMapping("/{userId}/update")
+    public ResponseEntity<String> updateProfile(@ModelAttribute UpdateUserDTO updateUserDTO, @PathVariable Long userId) {
+            userService.update(userId, updateUserDTO);
+            return ResponseEntity.ok("Profile updated successfully");
     }
 }
