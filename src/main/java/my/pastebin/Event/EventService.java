@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import my.pastebin.User.User;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
@@ -45,9 +46,9 @@ public class EventService {
      * @param newEventDTO the DTO containing event details
      * @return the created event
      */
-    public Event create(NewEventDTO newEventDTO) {
+    public Event create(NewEventDTO newEventDTO, MultipartFile image) {
 
-        String key = s3Service.uploadImage(newEventDTO.image());
+        String key = s3Service.uploadImage(image);
 
         var event = Event.builder()
                 .name(newEventDTO.name())

@@ -11,7 +11,6 @@ public record NewEventDTO(
         String address,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
-        Integer capacity,
-        MultipartFile image
+        Integer capacity
 ) {
 }

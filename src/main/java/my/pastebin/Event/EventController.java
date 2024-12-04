@@ -15,6 +15,7 @@ import my.pastebin.User.dto.UserOnEvent;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -35,8 +36,9 @@ public class EventController {
      */
     @Operation(summary = "Create a new event")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> createEvent(@ModelAttribute NewEventDTO newEventDTO) {
-        eventService.create(newEventDTO);
+    public ResponseEntity<String> createEvent(@RequestPart("newEventDTO") NewEventDTO newEventDTO,
+                                              @RequestPart("image") MultipartFile image) {
+        eventService.create(newEventDTO, image);
         return ResponseEntity.ok("Event was created successfully");
     }
 
