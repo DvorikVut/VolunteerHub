@@ -5,12 +5,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import my.pastebin.Event.dto.EventInfoDTO;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.Event.dto.UserEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
+import my.pastebin.User.dto.UserInfo;
+import my.pastebin.User.dto.UserOnEvent;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,9 +34,9 @@ public class EventController {
      */
     @PostMapping
     @Operation(summary = "Create a new event")
-    @ApiResponse(responseCode = "200", description = "Event was created successfully")
-    public ResponseEntity<?> createEvent(@RequestBody NewEventDTO newEventDTO) {
-        return ResponseEntity.ok(eventService.create(newEventDTO));
+    public ResponseEntity<String> createEvent(@RequestBody NewEventDTO newEventDTO) {
+        eventService.create(newEventDTO);
+        return ResponseEntity.ok("Event was created successfully");
     }
 
     /**
@@ -41,9 +46,9 @@ public class EventController {
      * @return response confirming the registration
      */
     @PostMapping("/register/{eventId}")
-    public ResponseEntity<?> registerUserForEvent(@PathVariable Long eventId) {
+    public ResponseEntity<String> registerUserForEvent(@PathVariable Long eventId) {
         eventUserStatusService.registerUserForEvent(eventId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("User was registered successfully for event");
     }
 
     /**
@@ -54,9 +59,9 @@ public class EventController {
      * @return response confirming the status change
      */
     @PostMapping("/status-confirm/{eventId}/{userId}")
-    public ResponseEntity<?> changeStatusConfirm(@PathVariable Long eventId, @PathVariable Long userId) {
+    public ResponseEntity<String> changeStatusConfirm(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.CONFIRMED);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Status was changed successfully");
     }
 
     /**
@@ -67,7 +72,7 @@ public class EventController {
      * @return response confirming the status change
      */
     @PostMapping("/status-attended/{eventId}/{userId}")
-    public ResponseEntity<?> changeStatusAttended(@PathVariable Long eventId, @PathVariable Long userId) {
+    public ResponseEntity<String> changeStatusAttended(@PathVariable Long eventId, @PathVariable Long userId) {
         eventUserStatusService.changeStatus(eventId, userId, Status.ATTENDED);
         return ResponseEntity.ok("Status was changed successfully");
     }
@@ -80,7 +85,7 @@ public class EventController {
      * @return response confirming the update
      */
     @PutMapping("/{id}")
-    public ResponseEntity<?> changeEvent(@PathVariable Long id, @RequestBody NewEventDTO newEventDTO) {
+    public ResponseEntity<String> changeEvent(@PathVariable Long id, @RequestBody NewEventDTO newEventDTO) {
         eventService.change(id, newEventDTO);
         return ResponseEntity.ok("Event was changed successfully");
     }
@@ -92,7 +97,7 @@ public class EventController {
      * @return response confirming the deletion
      */
     @DeleteMapping
-    public ResponseEntity<?> deleteEvent(Long id) {
+    public ResponseEntity<String> deleteEvent(Long id) {
         eventService.delete(id);
         return ResponseEntity.ok("Event was deleted successfully");
     }
@@ -104,7 +109,7 @@ public class EventController {
      * @return response confirming the deletion
      */
     @DeleteMapping("/delete-user")
-    public ResponseEntity<?> deleteUserFromEvent(@RequestBody UserEventDTO userEventDTO) {
+    public ResponseEntity<String> deleteUserFromEvent(@RequestBody UserEventDTO userEventDTO) {
         eventUserStatusService.deleteUserFromEvent(userEventDTO.eventId(), userEventDTO.userId());
         return ResponseEntity.ok("User was deleted successfully from event");
     }
@@ -116,7 +121,7 @@ public class EventController {
      * @return the event details
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEvent(@PathVariable Long id) {
+    public ResponseEntity<EventInfoDTO> getEvent(@PathVariable Long id) {
         return ResponseEntity.ok(eventService.getEventInfo(id));
     }
 
@@ -126,7 +131,7 @@ public class EventController {
      * @return a list of events
      */
     @GetMapping("/my-as-creator")
-    public ResponseEntity<?> getAllAsCreatorEvents() {
+    public ResponseEntity<List<EventInfoDTO>> getAllAsCreatorEvents() {
         return ResponseEntity.ok(eventService.getAllAsCreatorEvents());
     }
 
@@ -136,7 +141,7 @@ public class EventController {
      * @return a list of all events
      */
     @GetMapping
-    public ResponseEntity<?> getAllEvents() {
+    public ResponseEntity<List<EventInfoDTO>> getAllEvents() {
         return ResponseEntity.ok(eventService.getAll());
     }
 
@@ -147,7 +152,7 @@ public class EventController {
      * @return the number of registered users
      */
     @GetMapping("/users-registered/{eventId}")
-    public ResponseEntity<?> getNumberOfUsers(@PathVariable Long eventId) {
+    public ResponseEntity<List<UserOnEvent>> getNumberOfUsers(@PathVariable Long eventId) {
         return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
     }
 
@@ -157,7 +162,7 @@ public class EventController {
      * @return a list of future events
      */
     @GetMapping("/future")
-    public ResponseEntity<?> getFutureEvents() {
+    public ResponseEntity<List<EventInfoDTO>> getFutureEvents() {
         return ResponseEntity.ok(eventService.getFutureEvent());
     }
 
@@ -167,7 +172,7 @@ public class EventController {
      * @return a list of events
      */
     @GetMapping("/my-as-participant")
-    public ResponseEntity<?> getAllAsParticipant(){
+    public ResponseEntity<List<EventInfoDTO>> getAllAsParticipant(){
         return ResponseEntity.ok(eventService.getAllAsParticipant());
     }
 }
