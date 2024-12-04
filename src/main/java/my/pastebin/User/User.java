@@ -28,6 +28,8 @@ public class User implements UserDetails {
     private Role role;
     private Integer points;
     private Float pointAsCreator;
+    private String imageURL;
+    private String s3ImageKey;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
