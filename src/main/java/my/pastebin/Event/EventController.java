@@ -167,7 +167,7 @@ public class EventController {
      */
     @Operation(summary = "Get the number of registered users for an event")
     @GetMapping("/users-registered/{eventId}")
-    public ResponseEntity<List<UserInfo>> getNumberOfUsers(@PathVariable Long eventId) {
+    public ResponseEntity<List<UserOnEvent>> getNumberOfUsers(@PathVariable Long eventId) {
         return ResponseEntity.ok(eventUserStatusService.getRegisteredUsers(eventId));
     }
 

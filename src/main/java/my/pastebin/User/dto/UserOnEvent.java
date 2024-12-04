@@ -7,6 +7,7 @@ import my.pastebin.EventUserStatus.Status;
 public record UserOnEvent(Long id,
                           String name,
                           String surname,
+                          String imageURL,
                           Status status
 ) {
 }
