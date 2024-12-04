@@ -4,14 +4,15 @@ import lombok.RequiredArgsConstructor;
 import my.pastebin.Feedback.Feedback;
 import my.pastebin.Feedback.FeedbackService;
 import my.pastebin.User.dto.UserInfo;
+import my.pastebin.User.dto.UserInfoDTOMapper;
 import my.pastebin.User.dto.UserOnEvent;
-import my.pastebin.User.dto.UserTopInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class UserService {
     private final UserRepo userRepo;
     private final FeedbackService feedbackService;
     private final UserMapper userMapper;
+    private final UserInfoDTOMapper userInfoDTOMapper;
 
     /**
      * Retrieves a user by their ID.
@@ -70,16 +72,6 @@ public class UserService {
     }
 
     /**
-     * Maps a User entity to a UserInfo DTO.
-     *
-     * @param user the user entity
-     * @return the mapped UserInfo DTO
-     */
-    public UserInfo UserToUserInfo(User user) {
-        return userMapper.mapToUserInfo(user);
-    }
-
-    /**
      * Maps a User entity to a UserOnEvent DTO.
      *
      * @param user the user entity
@@ -104,14 +96,10 @@ public class UserService {
      *
      * @return a list of UserTopInfo DTOs for the top 100 users
      */
-    public List<UserTopInfo> getTop100ByPoints() {
+    public List<UserInfo> getTop100ByPoints() {
         List<User> users = userRepo.findTop100ByOrderByPointsDesc();
         return users.stream()
-                .map(user -> UserTopInfo.builder()
-                        .name(user.getName())
-                        .email(user.getEmail())
-                        .points(user.getPoints())
-                        .build())
+                .map(userInfoDTOMapper)
                 .toList();
     }
 }
