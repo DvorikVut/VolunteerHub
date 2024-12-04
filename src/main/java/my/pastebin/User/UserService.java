@@ -72,17 +72,6 @@ public class UserService {
     }
 
     /**
-     * Maps a User entity to a UserOnEvent DTO.
-     *
-     * @param user the user entity
-     * @param eventId the ID of the event
-     * @return the mapped UserOnEvent DTO
-     */
-    public UserOnEvent UserToUserOnEvent(User user, Long eventId) {
-        return userMapper.mapToUserOnEvent(user, eventId);
-    }
-
-    /**
      * Retrieves information about the currently authenticated user.
      *
      * @return the UserInfo DTO of the currently authenticated user
