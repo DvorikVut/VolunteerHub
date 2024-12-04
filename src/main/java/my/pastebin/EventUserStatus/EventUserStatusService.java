@@ -133,12 +133,10 @@ public class EventUserStatusService {
      * Retrieves all users registered for a specific event as DTOs.
      *
      * @param eventId the ID of the event
-     * @return a list of users registered for the event
+     * @return a number of users registered for the event
      */
-    public List<UserOnEvent> getRegisteredUsers(Long eventId) {
-        return eventUserStatusRepo.findAllByEventId(eventId).stream()
-                .map(eventUserStatus -> userService.UserToUserOnEvent(userService.getUserById(eventUserStatus.getUserId()), eventId))
-                .toList();
+    public Integer getRegisteredUsers(Long eventId) {
+        return eventUserStatusRepo.findAllByEventId(eventId).size();
     }
 
     /**
