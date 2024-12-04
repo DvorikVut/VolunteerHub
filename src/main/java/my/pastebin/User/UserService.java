@@ -40,7 +40,7 @@ public class UserService {
     public User getCurrentUser() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof User) {
-            return (User) principal;
+            return getUserById(((User) principal).getId());
         } else {
             throw new RuntimeException("User not authenticated");
         }
