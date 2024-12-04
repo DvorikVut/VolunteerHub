@@ -1,14 +1,23 @@
 # Используем официальный образ OpenJDK 17 в качестве базового
-FROM openjdk:22-jdk-slim
+FROM maven:3.9.9-eclipse-temurin-22-jammy AS build
 
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
+# Copy the pom.xml and source code to the container
+COPY pom.xml .
+COPY src ./src
+
+# Build the application with Maven
+RUN mvn clean package
+
+FROM openjdk:22
+
 # Копируем файл jar в контейнер
-COPY target/Pastebin-0.0.1-SNAPSHOT.jar /app/Pastebin.jar
+COPY --from=build /app/target/ITU-v1.jar .
 
 # Указываем команду для запуска Spring Boot приложения
-CMD ["java", "-jar", "Pastebin.jar"]
+CMD ["java", "-jar", "ITU-v1.jar"]
 
 # Открываем порт приложения
-EXPOSE 8000
+EXPOSE 8080

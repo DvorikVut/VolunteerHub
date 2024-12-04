@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>my</groupId>
-    <artifactId>Pastebin</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>Pastebin</name>
-    <description>Pastebin</description>
+    <artifactId>ITU</artifactId>
+    <version>v1</version>
+    <name>ITU</name>
+    <description>ITU</description>
     <url/>
     <licenses>
         <license/>
@@ -29,8 +29,12 @@
     <properties>
         <java.version>22</java.version>
     </properties>
-
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -45,11 +49,6 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
             <version>6.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
