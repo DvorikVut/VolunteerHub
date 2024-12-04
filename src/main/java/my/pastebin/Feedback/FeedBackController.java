@@ -1,5 +1,7 @@
 package my.pastebin.Feedback;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Feedback.dto.NewFeedbackDTO;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/feedback")
+@Tag(name = "FeedbackController", description = "Operations related to feedbacks")
 public class FeedBackController {
 
     private final FeedbackService feedbackService;
@@ -19,16 +22,19 @@ public class FeedBackController {
         return ResponseEntity.ok(feedbackService.getAllFeedbacks());
     }
 
+    @Operation(summary = "Get all feedbacks written by the current user")
     @GetMapping("/my-written")
     public ResponseEntity<?> getAllUserFeedbacks() {
         return ResponseEntity.ok(feedbackService.getAllUserFeedbacks());
     }
 
+    @Operation(summary = "Get all feedbacks received by the current user")
     @GetMapping("/my-received")
     public ResponseEntity<?> getAllUserReceivedFeedbacks() {
         return ResponseEntity.ok(feedbackService.getAllUserReceivedFeedbacks());
     }
 
+    @Operation(summary = "Get a feedback by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<?> getFeedback(@PathVariable Long id) {
         try {
@@ -38,6 +44,7 @@ public class FeedBackController {
         }
     }
 
+    @Operation(summary = "Create a new feedback")
     @PostMapping
     public ResponseEntity<?> createFeedback(NewFeedbackDTO newFeedbackDTO){
         try{
@@ -47,6 +54,7 @@ public class FeedBackController {
         }
     }
 
+    @Operation(summary = "Change a feedback")
     @PutMapping("/{id}")
     public ResponseEntity<?> changeFeedback(@PathVariable Long id, NewFeedbackDTO newFeedbackDTO) {
         try {
@@ -56,6 +64,7 @@ public class FeedBackController {
         }
     }
 
+    @Operation(summary = "Delete a feedback")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteFeedback(@PathVariable Long id) {
         try {
