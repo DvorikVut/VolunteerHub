@@ -1,5 +1,7 @@
 package my.pastebin.Event.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 
 public record NewEventDTO(
@@ -9,6 +11,7 @@ public record NewEventDTO(
         String address,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
-        Integer capacity
+        Integer capacity,
+        MultipartFile image
 ) {
 }

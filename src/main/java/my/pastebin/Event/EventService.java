@@ -7,6 +7,7 @@ import my.pastebin.EventUserStatus.EventUserStatus;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Logger.MyLogger;
+import my.pastebin.S3.S3Service;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
 import org.springframework.context.annotation.Lazy;
@@ -24,17 +25,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class EventService {
-
     private final EventRepo eventRepo;
     private final UserService userService;
     private final EventUserStatusService eventUserStatusService;
     private final EventInfoDTOMapper eventInfoDTOMapper;
+    private final S3Service s3Service;
 
-    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService, EventInfoDTOMapper eventInfoDTOMapper) {
+    public EventService(EventRepo eventRepo, @Lazy UserService userService, @Lazy EventUserStatusService eventUserStatusService, EventInfoDTOMapper eventInfoDTOMapper, S3Service s3Service) {
         this.eventRepo = eventRepo;
         this.userService = userService;
         this.eventUserStatusService = eventUserStatusService;
         this.eventInfoDTOMapper = eventInfoDTOMapper;
+        this.s3Service = s3Service;
     }
 
     /**
@@ -44,6 +46,9 @@ public class EventService {
      * @return the created event
      */
     public Event create(NewEventDTO newEventDTO) {
+
+        String key = s3Service.uploadImage(newEventDTO.image());
+
         var event = Event.builder()
                 .name(newEventDTO.name())
                 .description(newEventDTO.description())
@@ -54,6 +59,8 @@ public class EventService {
                 .address(newEventDTO.address())
                 .creator(userService.getCurrentUser())
                 .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
+                .s3ImageKey(key)
+                .imageURL(s3Service.getPublicUrl(key))
                 .build();
         MyLogger.logInfo("Event with name " + event.getName() + " created");
         return eventRepo.save(event);

@@ -27,6 +27,8 @@ public class Event {
     private LocalDateTime endDateTime;
     private Integer capacity;
     private Integer price;
+    private String s3ImageKey;
+    private String imageURL;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

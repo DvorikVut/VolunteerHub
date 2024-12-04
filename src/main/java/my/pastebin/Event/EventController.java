@@ -12,6 +12,7 @@ import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserOnEvent;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +34,8 @@ public class EventController {
      * @return the created event
      */
     @Operation(summary = "Create a new event")
-    @PostMapping
-    public ResponseEntity<String> createEvent(@RequestBody NewEventDTO newEventDTO) {
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<String> createEvent(@ModelAttribute NewEventDTO newEventDTO) {
         eventService.create(newEventDTO);
         return ResponseEntity.ok("Event was created successfully");
     }

@@ -17,6 +17,7 @@ public record EventInfoDTO(
         Integer capacity,
         Integer occupiedQuantity,
         Integer price,
-        UserInfo creator
+        UserInfo creator,
+        String ImageURL
 ) {
 }
