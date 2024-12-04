@@ -1,22 +1,31 @@
-# Используем официальный образ OpenJDK 17 в качестве базового
+# Этап сборки
 FROM maven:3.9.9-eclipse-temurin-22-jammy AS build
 
-# Устанавливаем рабочую директорию внутри контейнера
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Copy the pom.xml and source code to the container
+# Сначала копируем только файл pom.xml и запускаем скачивание зависимостей
 COPY pom.xml .
+
+# Используем отдельную команду для загрузки зависимостей
+RUN mvn dependency:go-offline
+
+# Копируем исходный код проекта
 COPY src ./src
 
-# Build the application with Maven
+# Сборка приложения
 RUN mvn clean package
 
+# Этап выполнения
 FROM openjdk:22
 
-# Копируем файл jar в контейнер
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем скомпилированный jar из этапа сборки
 COPY --from=build /app/target/ITU-v1.jar .
 
-# Указываем команду для запуска Spring Boot приложения
+# Указываем команду для запуска приложения
 CMD ["java", "-jar", "ITU-v1.jar"]
 
 # Открываем порт приложения
