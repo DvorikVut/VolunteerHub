@@ -109,13 +109,13 @@ public class EventController {
     /**
      * Deletes an event.
      *
-     * @param id the ID of the event to delete
+     * @param eventId the ID of the event to delete
      * @return response confirming the deletion
      */
     @Operation(summary = "Delete an event")
-    @DeleteMapping
-    public ResponseEntity<String> deleteEvent(Long id) {
-        eventService.delete(id);
+    @DeleteMapping("/{eventId}")
+    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
+        eventService.delete(eventId);
         return ResponseEntity.ok("Event was deleted successfully");
     }
 
