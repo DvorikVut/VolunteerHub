@@ -103,11 +103,12 @@ public class EventService {
     public void delete(Long id) {
         var event = eventRepo.findById(id).orElseThrow();
 
-
         if (!event.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to delete this event");
 
-        s3Service.delete(event.getS3ImageKey());
+        if(event.getS3ImageKey() != null)
+            s3Service.delete(event.getS3ImageKey());
+
         eventRepo.delete(event);
     }
 
