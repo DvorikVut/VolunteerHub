@@ -10,6 +10,7 @@ import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.Event.dto.UserEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
+import my.pastebin.Logger.MyLogger;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserOnEvent;
 import org.springframework.http.MediaType;
@@ -35,11 +36,18 @@ public class EventController {
      * @return the created event
      */
     @Operation(summary = "Create a new event")
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping
     public ResponseEntity<String> createEvent(@RequestPart("newEventDTO") NewEventDTO newEventDTO,
-                                              @RequestPart(value = "image", required = false) MultipartFile image) {
+                                              @RequestPart(name = "image", required = false) MultipartFile image) {
         eventService.create(newEventDTO, image);
         return ResponseEntity.ok("Event was created successfully");
+    }
+
+    @Operation(summary = "upload image")
+    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image) {
+        MyLogger.logInfo("Image was uploaded successfully" + image.getSize());
+        return ResponseEntity.ok("Image was uploaded successfully");
     }
 
     /**

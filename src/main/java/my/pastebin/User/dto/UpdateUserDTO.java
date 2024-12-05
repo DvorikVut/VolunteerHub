@@ -4,7 +4,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 public record UpdateUserDTO(
         String name,
-        String surname,
-        MultipartFile image
+        String surname
 ) {
 }

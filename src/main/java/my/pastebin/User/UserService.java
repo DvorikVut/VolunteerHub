@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -92,12 +93,12 @@ public class UserService {
                 .toList();
     }
 
-    public void update(Long id, UpdateUserDTO updateUserDTO){
+    public void update(Long id, UpdateUserDTO updateUserDTO, MultipartFile image){
         User user = getUserById(id);
-        if(updateUserDTO.image() != null){
-            String key = s3Service.uploadImage(updateUserDTO.image());
-            user.setImageURL(key);
+        if(image != null){
+            String key = s3Service.uploadImage(image);
             user.setS3ImageKey(key);
+            user.setImageURL(s3Service.getPublicUrl(key));
         }
 
         user.setName(updateUserDTO.name());

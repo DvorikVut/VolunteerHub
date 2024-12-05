@@ -7,6 +7,7 @@ import my.pastebin.User.dto.UpdateUserDTO;
 import my.pastebin.User.dto.UserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -36,9 +37,11 @@ public class UserController {
     }
 
     @Operation(summary = "Update the profile of the user")
-    @GetMapping("/{userId}/update")
-    public ResponseEntity<String> updateProfile(@ModelAttribute UpdateUserDTO updateUserDTO, @PathVariable Long userId) {
-            userService.update(userId, updateUserDTO);
-            return ResponseEntity.ok("Profile updated successfully");
+    @PostMapping("/{userId}/update")
+    public ResponseEntity<String> updateProfile(@RequestPart("updateUserDTO") UpdateUserDTO updateUserDTO,
+                                                @RequestPart(value = "image", required = false) MultipartFile image,
+                                                @PathVariable Long userId) {
+        userService.update(userId, updateUserDTO, image );
+        return ResponseEntity.ok("Profile updated successfully");
     }
 }
