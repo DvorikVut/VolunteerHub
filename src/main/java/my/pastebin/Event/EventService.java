@@ -47,7 +47,6 @@ public class EventService {
      * @return the created event
      */
     public Event create(NewEventDTO newEventDTO) {
-
         var event = Event.builder()
                 .name(newEventDTO.name())
                 .description(newEventDTO.description())
@@ -70,7 +69,6 @@ public class EventService {
             throw new NotAuthorizedException("You are not allowed to add image to this event");
 
         String key = s3Service.uploadImage(image);
-        s3Service.delete(event.getS3ImageKey());
         event.setS3ImageKey(key);
         event.setImageURL(s3Service.getPublicUrl(key));
         eventRepo.save(event);
