@@ -1,6 +1,7 @@
 package my.pastebin.User.dto;
 
 import lombok.Builder;
+import my.pastebin.User.Role;
 
 @Builder
 public record UserInfo(
@@ -10,6 +11,7 @@ public record UserInfo(
         String email,
         Integer points,
         Float pointAsCreator,
-        String imageURL
+        String imageURL,
+        Role role
 ) {
 }
