@@ -17,6 +17,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    @Operation(summary = "Get all users")
+    @GetMapping
+    public ResponseEntity<List<UserInfo>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAll());
+    }
+
     @Operation(summary = "Get the profile of the current user")
     @GetMapping("/me")
     public ResponseEntity<UserInfo> getProfile() {

@@ -104,4 +104,10 @@ public class UserService {
         user.setSurname(updateUserDTO.surname());
         userRepo.save(user);
     }
+
+    public List<UserInfo> getAll() {
+        return userRepo.findAll().stream()
+                .map(userInfoDTOMapper)
+                .toList();
+    }
 }
