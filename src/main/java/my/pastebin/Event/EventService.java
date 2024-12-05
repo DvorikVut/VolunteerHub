@@ -48,8 +48,6 @@ public class EventService {
      */
     public Event create(NewEventDTO newEventDTO, MultipartFile image) {
 
-        String key = s3Service.uploadImage(image);
-
         var event = Event.builder()
                 .name(newEventDTO.name())
                 .description(newEventDTO.description())
@@ -60,11 +58,28 @@ public class EventService {
                 .address(newEventDTO.address())
                 .creator(userService.getCurrentUser())
                 .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
-                .s3ImageKey(key)
-                .imageURL(s3Service.getPublicUrl(key))
                 .build();
         MyLogger.logInfo("Event with name " + event.getName() + " created");
-        return eventRepo.save(event);
+        Event event1 = eventRepo.save(event);
+
+        if (image != null)
+            addImage(event1.getId(), image);
+
+        return event1;
+
+    }
+
+
+    public void addImage(Long id, MultipartFile image) {
+        Event event = eventRepo.findById(id).orElseThrow();
+        if (!event.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
+            throw new NotAuthorizedException("You are not allowed to add image to this event");
+
+        String key = s3Service.uploadImage(image);
+        s3Service.delete(event.getS3ImageKey());
+        event.setS3ImageKey(key);
+        event.setImageURL(s3Service.getPublicUrl(key));
+        eventRepo.save(event);
     }
 
     /**

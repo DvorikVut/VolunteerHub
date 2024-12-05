@@ -37,7 +37,7 @@ public class EventController {
     @Operation(summary = "Create a new event")
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<String> createEvent(@RequestPart("newEventDTO") NewEventDTO newEventDTO,
-                                              @RequestPart("image") MultipartFile image) {
+                                              @RequestPart(value = "image", required = false) MultipartFile image) {
         eventService.create(newEventDTO, image);
         return ResponseEntity.ok("Event was created successfully");
     }
