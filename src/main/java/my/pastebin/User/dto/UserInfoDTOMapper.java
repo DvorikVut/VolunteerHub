@@ -11,8 +11,11 @@ public class UserInfoDTOMapper implements Function<User, UserInfo> {
     public UserInfo apply(User user) {
         return UserInfo.builder()
                 .id(user.getId())
+                .name(user.getName())
                 .surname(user.getSurname())
                 .email(user.getEmail())
+                .points(user.getPoints())
+                .pointAsCreator(user.getPointAsCreator())
                 .imageURL(user.getImageURL())
                 .build();
     }
