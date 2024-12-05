@@ -46,7 +46,7 @@ public class EventService {
      * @param newEventDTO the DTO containing event details
      * @return the created event
      */
-    public Event create(NewEventDTO newEventDTO, MultipartFile image) {
+    public Event create(NewEventDTO newEventDTO) {
 
         var event = Event.builder()
                 .name(newEventDTO.name())
@@ -60,13 +60,7 @@ public class EventService {
                 .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
                 .build();
         MyLogger.logInfo("Event with name " + event.getName() + " created");
-        Event event1 = eventRepo.save(event);
-
-        if (image != null)
-            addImage(event1.getId(), image);
-
-        return event1;
-
+        return eventRepo.save(event);
     }
 
 

@@ -37,16 +37,15 @@ public class EventController {
      */
     @Operation(summary = "Create a new event")
     @PostMapping
-    public ResponseEntity<String> createEvent(@RequestPart("newEventDTO") NewEventDTO newEventDTO,
-                                              @RequestPart(name = "image", required = false) MultipartFile image) {
-        eventService.create(newEventDTO, image);
-        return ResponseEntity.ok("Event was created successfully");
+    public ResponseEntity<Long> createEvent(@RequestBody NewEventDTO newEventDTO) {
+        Event event = eventService.create(newEventDTO);
+        return ResponseEntity.ok(event.getId());
     }
 
-    @Operation(summary = "upload image")
-    @PostMapping(value = "/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image) {
-        MyLogger.logInfo("Image was uploaded successfully" + image.getSize());
+    @Operation(summary = "upload image for event")
+    @PostMapping(value = "/{eventId}/upload-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadImage(@RequestPart("image") MultipartFile image, @PathVariable Long eventId) {
+        eventService.addImage(eventId, image);
         return ResponseEntity.ok("Image was uploaded successfully");
     }
 
