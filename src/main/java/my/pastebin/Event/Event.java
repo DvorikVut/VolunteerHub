@@ -29,6 +29,7 @@ public class Event {
     private Integer price;
     private String s3ImageKey;
     private String imageURL;
+    private String coordinates;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

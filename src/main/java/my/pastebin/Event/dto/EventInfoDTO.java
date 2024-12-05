@@ -18,6 +18,7 @@ public record EventInfoDTO(
         Integer occupiedQuantity,
         Integer price,
         UserInfo creator,
-        String imageURL
+        String imageURL,
+        String coordinates
 ) {
 }

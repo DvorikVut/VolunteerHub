@@ -11,6 +11,7 @@ public record NewEventDTO(
         String address,
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
-        Integer capacity
+        Integer capacity,
+        String coordinates
 ) {
 }

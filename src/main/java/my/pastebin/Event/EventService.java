@@ -57,6 +57,7 @@ public class EventService {
                 .address(newEventDTO.address())
                 .creator(userService.getCurrentUser())
                 .price(generateEventPrice(newEventDTO.startDateTime(), newEventDTO.endDateTime()))
+                .coordinates(newEventDTO.coordinates())
                 .build();
         MyLogger.logInfo("Event with name " + event.getName() + " created");
         return eventRepo.save(event);

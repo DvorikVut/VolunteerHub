@@ -25,6 +25,7 @@ public class EventInfoDTOMapper implements Function<Event,EventInfoDTO> {
                 .price(event.getPrice())
                 .creator(userInfoDTOMapper.apply(event.getCreator()))
                 .imageURL(event.getImageURL())
+                .coordinates(event.getCoordinates())
                 .build();
     }
 }
