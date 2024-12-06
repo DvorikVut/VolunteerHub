@@ -51,14 +51,6 @@ public class AdminController {
         eventService.change(eventId, newEventDTO);
         return ResponseEntity.ok("Event updated");
     }
-
-    @Operation(summary = "Delete a user")
-    @DeleteMapping("/user/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
-        userService.delete(userId);
-        return ResponseEntity.ok("User deleted");
-    }
-
     @Operation(summary = "Get all created events by a user")
     @GetMapping("/user/created-events/{userId}")
     public ResponseEntity<List<EventInfoDTO>> getCreatedEventsByUserId(@PathVariable Long userId) {

@@ -6,8 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import my.pastebin.User.User;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDateTime;
+
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Feedback {
@@ -16,6 +21,7 @@ public class Feedback {
     private Long id;
     private String text;
     private Integer rating;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
