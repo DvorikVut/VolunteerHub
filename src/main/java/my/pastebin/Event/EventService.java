@@ -11,17 +11,14 @@ import my.pastebin.S3.S3Service;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import my.pastebin.User.User;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.AccessDeniedException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -205,4 +202,17 @@ public class EventService {
         List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByUserId(user.getId());
         return eventUserStatuses.stream().map(eventUserStatus -> getEventInfo(eventUserStatus.getEventId())).toList();
     }
+
+    public List<EventInfoDTO> getCreatedEventsByUserId(Long userId) {
+        return eventRepo.findAllByCreatorId(userId)
+                .stream()
+                .map(eventInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+    public List<EventInfoDTO> getParticipatedEventsByUserId(Long userId) {
+        List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByUserId(userId);
+        return eventUserStatuses.stream().map(eventUserStatus -> getEventInfo(eventUserStatus.getEventId())).toList();
+    }
+
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import my.pastebin.Feedback.Feedback;
 import my.pastebin.Feedback.FeedbackService;
 import my.pastebin.S3.S3Service;
+import my.pastebin.User.dto.UpdateUserAdminDTO;
 import my.pastebin.User.dto.UpdateUserDTO;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserInfoDTOMapper;
@@ -110,5 +111,21 @@ public class UserService {
         return userRepo.findAll().stream()
                 .map(userInfoDTOMapper)
                 .toList();
+    }
+
+    public void changeUserProfile(Long id, UpdateUserAdminDTO updateUserAdminDTO) {
+        User user = getUserById(id);
+        user.setName(updateUserAdminDTO.name());
+        user.setSurname(updateUserAdminDTO.surname());
+        user.setPoints(updateUserAdminDTO.points());
+        user.setPointAsCreator(updateUserAdminDTO.pointsAsCreator());
+        userRepo.save(user);
+    }
+
+    public void delete(Long id) {
+        if(!getCurrentUser().getRole().equals(Role.ADMIN)) {
+            throw new RuntimeException("You are not allowed to delete users");
+        }
+        userRepo.deleteById(id);
     }
 }

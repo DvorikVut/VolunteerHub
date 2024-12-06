@@ -2,6 +2,8 @@ package my.pastebin.User;
 
 import jakarta.persistence.*;
 import lombok.*;
+import my.pastebin.Event.Event;
+import my.pastebin.Feedback.Feedback;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +32,17 @@ public class User implements UserDetails {
     private Float pointAsCreator;
     private String imageURL;
     private String s3ImageKey;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> writtenFeedbacks;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> takenFeedbacks;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Event> events;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

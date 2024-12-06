@@ -85,6 +85,26 @@ public class EventUserStatusService {
         eventUserStatusRepo.save(eventUserStatus);
     }
 
+    public void registerUserForEventByUserId(Long eventId, Long userId) {
+        Event event = eventService.getById(eventId);
+
+        if (event == null) {
+            MyLogger.logInfo("EXCEPTION: Event with ID " + eventId + " not found");
+            throw new ResourceNotFoundException("Event not found");
+        }
+
+        if (event.getCapacity() <= getNumberOfConfirmedUsers(eventId)) {
+            MyLogger.logInfo("EXCEPTION: Event " + event.getName() + " is full");
+            throw new BadRequestException("Event is full");
+        }
+
+        EventUserStatus eventUserStatus = new EventUserStatus();
+        eventUserStatus.setEventId(eventId);
+        eventUserStatus.setUserId(userId);
+        eventUserStatus.setStatus(Status.REGISTERED);
+        eventUserStatusRepo.save(eventUserStatus);
+    }
+
     /**
      * Deletes a user from a specific event.
      *
