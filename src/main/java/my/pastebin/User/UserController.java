@@ -27,7 +27,7 @@ public class UserController {
     @Operation(summary = "Get the profile of the current user")
     @GetMapping("/me")
     public ResponseEntity<UserInfo> getProfile() {
-        return userService.getCurrentUserInfo();
+        return ResponseEntity.ok(userService.getCurrentUserInfo());
     }
 
     @Operation(summary = "Get top 100 users by points")

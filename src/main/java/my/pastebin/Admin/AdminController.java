@@ -7,6 +7,8 @@ import my.pastebin.Event.dto.EventInfoDTO;
 import my.pastebin.Event.dto.NewEventDTO;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.Feedback.FeedbackService;
+import my.pastebin.Feedback.dto.FeedbackInfoDTO;
+import my.pastebin.Feedback.dto.NewFeedbackDTO;
 import my.pastebin.User.UserService;
 import my.pastebin.User.dto.UpdateUserAdminDTO;
 import my.pastebin.User.dto.UserInfo;
@@ -26,23 +28,25 @@ public class AdminController {
     private final EventUserStatusService eventUserStatusService;
     private final FeedbackService feedbackService;
 
-    @Operation(summary = "Get all users")
-    @GetMapping("/users")
-    public ResponseEntity<List<UserInfo>> getAllUsers() {
-        return ResponseEntity.ok(userService.getAll());
-    }
-
+    //EVENTS
     @Operation(summary = "Get all events")
     @GetMapping("/events")
     public ResponseEntity<List<EventInfoDTO>> getAllEvents() {
         return ResponseEntity.ok(eventService.getAll());
     }
 
-    @Operation(summary = "Get all feedbacks")
-    @PutMapping("/user/{userId}")
-    public ResponseEntity<?> changeUserProfile(@PathVariable Long userId, UpdateUserAdminDTO updateUserAdminDTO) {
-        userService.changeUserProfile(userId, updateUserAdminDTO);
-        return ResponseEntity.ok("User profile updated");
+    @Operation(summary = "register a user for an event")
+    @PostMapping("/event/{eventId}/add-participant/{userId}")
+    public ResponseEntity<String> addParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
+        eventUserStatusService.registerUserForEventByUserId(eventId, userId);
+        return ResponseEntity.ok("Participant added");
+    }
+
+    @Operation(summary = "remove a user from an event")
+    @DeleteMapping("/event/{eventId}/remove-participant/{userId}")
+    public ResponseEntity<String> removeParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
+        eventUserStatusService.deleteUserFromEvent(eventId, userId);
+        return ResponseEntity.ok("Participant removed");
     }
 
     @Operation(summary = "Change an event")
@@ -63,17 +67,58 @@ public class AdminController {
         return ResponseEntity.ok(eventService.getParticipatedEventsByUserId(userId));
     }
 
-    @Operation(summary = "register a user for an event")
-    @PostMapping("/event/{eventId}/add-participant/{userId}")
-    public ResponseEntity<String> addParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
-        eventUserStatusService.registerUserForEventByUserId(eventId, userId);
-        return ResponseEntity.ok("Participant added");
+    @Operation(summary = "Delete an event")
+    @DeleteMapping("/event/{eventId}")
+    public ResponseEntity<String> deleteEvent(@PathVariable Long eventId) {
+        eventService.delete(eventId);
+        return ResponseEntity.ok("Event deleted");
     }
 
-    @Operation(summary = "remove a user from an event")
-    @DeleteMapping("/event/{eventId}/remove-participant/{userId}")
-    public ResponseEntity<String> removeParticipant(@PathVariable Long eventId, @PathVariable Long userId) {
-        eventUserStatusService.deleteUserFromEvent(eventId, userId);
-        return ResponseEntity.ok("Participant removed");
+    //USERS
+    @Operation(summary = "Get all users")
+    @GetMapping("/users")
+    public ResponseEntity<List<UserInfo>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAll());
     }
+
+    @Operation(summary = "Get a user by its ID")
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<UserInfo> getUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(userService.getInfoById(userId));
+    }
+
+    @Operation(summary = "Change a user profile")
+    @PutMapping("/user/{userId}")
+    public ResponseEntity<?> changeUserProfile(@PathVariable Long userId, UpdateUserAdminDTO updateUserAdminDTO) {
+        userService.changeUserProfile(userId, updateUserAdminDTO);
+        return ResponseEntity.ok("User profile updated");
+    }
+
+
+    @Operation(summary = "Get all feedbacks")
+    @GetMapping("/feedbacks")
+    public ResponseEntity<List<FeedbackInfoDTO>> getAllFeedbacks() {
+        return ResponseEntity.ok(feedbackService.getAll());
+    }
+
+    @Operation(summary = "Get a feedback by its ID")
+    @GetMapping("/feedback/{id}")
+    public ResponseEntity<FeedbackInfoDTO> getFeedback(@PathVariable Long id) {
+        return ResponseEntity.ok(feedbackService.getInfoById(id));
+    }
+
+    @Operation(summary = "Change a feedback")
+    @PutMapping("/feedback/{id}")
+    public ResponseEntity<?> changeFeedback(@PathVariable Long id, NewFeedbackDTO changeFeedbackDTO) {
+        feedbackService.changeFeedback(id, changeFeedbackDTO);
+        return ResponseEntity.ok("Feedback changed");
+    }
+
+    @Operation(summary = "Delete a feedback")
+    @DeleteMapping("/feedback/{id}")
+    public ResponseEntity<?> deleteFeedback(@PathVariable Long id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok("Feedback deleted");
+    }
+
 }

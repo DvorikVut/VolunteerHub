@@ -20,6 +20,7 @@ public class FeedBackController {
 
     private final FeedbackService feedbackService;
 
+    @Operation(summary = "Get all feedbacks")
     @GetMapping
     public ResponseEntity<List<FeedbackInfoDTO>> getAllFeedbacks() {
         return ResponseEntity.ok(feedbackService.getAll());

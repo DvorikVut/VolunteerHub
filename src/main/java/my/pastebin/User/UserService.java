@@ -78,8 +78,12 @@ public class UserService {
      *
      * @return the UserInfo DTO of the currently authenticated user
      */
-    public ResponseEntity<UserInfo> getCurrentUserInfo() {
-        return ResponseEntity.ok(userInfoDTOMapper.apply(getCurrentUser()));
+    public UserInfo getCurrentUserInfo() {
+        return userInfoDTOMapper.apply(getCurrentUser());
+    }
+
+    public UserInfo getInfoById(Long id) {
+        return userInfoDTOMapper.apply(getUserById(id));
     }
 
     /**
