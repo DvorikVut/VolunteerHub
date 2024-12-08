@@ -8,13 +8,19 @@ import java.util.function.Function;
 import my.pastebin.EventUserStatus.EventUserStatusService;
 import my.pastebin.EventUserStatus.Status;
 import my.pastebin.User.dto.UserInfoDTOMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class EventInfoDTOMapper implements Function<Event,EventInfoDTO> {
     private final UserInfoDTOMapper userInfoDTOMapper;
     private final EventUserStatusService eventUserStatusService;
+
+    public EventInfoDTOMapper(@Lazy UserInfoDTOMapper userInfoDTOMapper, @Lazy EventUserStatusService eventUserStatusService) {
+        this.userInfoDTOMapper = userInfoDTOMapper;
+        this.eventUserStatusService = eventUserStatusService;
+    }
+
     @Override
     public EventInfoDTO apply(Event event) {
         return EventInfoDTO.builder()
