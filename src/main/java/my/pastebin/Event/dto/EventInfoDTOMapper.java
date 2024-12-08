@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import my.pastebin.Event.Event;
 
 import java.util.function.Function;
+
+import my.pastebin.EventUserStatus.EventUserStatusService;
+import my.pastebin.EventUserStatus.Status;
 import my.pastebin.User.dto.UserInfoDTOMapper;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class EventInfoDTOMapper implements Function<Event,EventInfoDTO> {
     private final UserInfoDTOMapper userInfoDTOMapper;
+    private final EventUserStatusService eventUserStatusService;
     @Override
     public EventInfoDTO apply(Event event) {
         return EventInfoDTO.builder()
@@ -23,6 +27,7 @@ public class EventInfoDTOMapper implements Function<Event,EventInfoDTO> {
                 .city(event.getCity())
                 .address(event.getAddress())
                 .price(event.getPrice())
+                .occupiedQuantity(eventUserStatusService.getAllByUserId(event.getId()).stream().filter(e -> e.getStatus().equals(Status.CONFIRMED)).count())
                 .creator(userInfoDTOMapper.apply(event.getCreator()))
                 .imageURL(event.getImageURL())
                 .coordinates(event.getCoordinates())

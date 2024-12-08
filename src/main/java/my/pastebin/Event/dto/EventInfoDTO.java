@@ -15,7 +15,7 @@ public record EventInfoDTO(
         LocalDateTime startDateTime,
         LocalDateTime endDateTime,
         Integer capacity,
-        Integer occupiedQuantity,
+        Long occupiedQuantity,
         Integer price,
         UserInfo creator,
         String imageURL,
