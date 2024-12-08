@@ -17,7 +17,8 @@ public class FeedbackInfoDTOMapper implements Function<Feedback,FeedbackInfoDTO>
                 .id(feedback.getId())
                 .text(feedback.getText())
                 .rating(feedback.getRating())
-                .creator(userInfoDTOMapper.apply(feedback.getCreator()))
+                .creator(userInfoDTOMapper.apply(feedback.getEvent().getCreator()))
+                .eventId(feedback.getEvent().getId())
                 .target(userInfoDTOMapper.apply(feedback.getUser()))
                 .createdAt(feedback.getCreatedAt())
                 .build();

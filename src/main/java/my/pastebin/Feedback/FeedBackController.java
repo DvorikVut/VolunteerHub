@@ -38,6 +38,12 @@ public class FeedBackController {
         return ResponseEntity.ok(feedbackService.getAllByCurrentUserReceive());
     }
 
+    @Operation(summary = "Get all feedbacks by event ID")
+    @GetMapping("/event/{eventId}")
+    public ResponseEntity<List<FeedbackInfoDTO>> getAllFeedbacksByEventId(@PathVariable Long eventId) {
+        return ResponseEntity.ok(feedbackService.getAllByEventId(eventId));
+    }
+
     @Operation(summary = "Get a feedback by its ID")
     @GetMapping("/{id}")
     public ResponseEntity<FeedbackInfoDTO> getFeedback(@PathVariable Long id) {

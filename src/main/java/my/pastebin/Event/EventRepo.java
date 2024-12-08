@@ -1,5 +1,6 @@
 package my.pastebin.Event;
 
+import my.pastebin.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

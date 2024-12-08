@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import my.pastebin.Event.Event;
 import my.pastebin.User.User;
 import org.springframework.cglib.core.Local;
 
@@ -28,6 +29,6 @@ public class Feedback {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "creator_id", referencedColumnName = "id")
-    private User creator;
+    @JoinColumn(name = "event_id", referencedColumnName = "id")
+    private Event event;
 }

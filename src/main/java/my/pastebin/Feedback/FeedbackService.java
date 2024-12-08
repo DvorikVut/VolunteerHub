@@ -1,6 +1,8 @@
 package my.pastebin.Feedback;
 
 import lombok.RequiredArgsConstructor;
+import my.pastebin.Event.Event;
+import my.pastebin.Event.EventService;
 import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Exceptions.ResourceNotFoundException;
 import my.pastebin.Feedback.dto.FeedbackInfoDTO;
@@ -24,19 +26,21 @@ public class FeedbackService {
     private final FeedbackRepo feedbackRepo;
     private final UserService userService;
     private final FeedbackInfoDTOMapper feedbackInfoDTOMapper;
+    private final EventService eventService;
 
-    public FeedbackService(FeedbackRepo feedbackRepo, @Lazy UserService userService, FeedbackInfoDTOMapper feedbackInfoDTOMapper) {
+    public FeedbackService(FeedbackRepo feedbackRepo, @Lazy UserService userService, FeedbackInfoDTOMapper feedbackInfoDTOMapper, EventService eventService) {
         this.feedbackRepo = feedbackRepo;
         this.userService = userService;
         this.feedbackInfoDTOMapper = feedbackInfoDTOMapper;
+        this.eventService = eventService;
     }
 
     public Feedback createFeedback(NewFeedbackDTO newFeedbackDTO){
         Feedback feedback = Feedback.builder()
                 .text(newFeedbackDTO.text())
                 .rating(newFeedbackDTO.rating())
-                .creator(userService.getCurrentUser())
-                .user(userService.getUserById(newFeedbackDTO.userToRateId()))
+                .event(eventService.getById(newFeedbackDTO.eventId()))
+                .user(userService.getCurrentUser())
                 .createdAt(LocalDateTime.now())
                 .build();
         return feedbackRepo.save(feedback);
@@ -44,14 +48,14 @@ public class FeedbackService {
 
     public void deleteFeedback(Long id)throws AccessDeniedException {
         Feedback feedback = feedbackRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        if(!feedback.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
+        if(!feedback.getEvent().getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
             throw new AccessDeniedException("You are not allowed to delete this feedback");
         feedbackRepo.deleteById(id);
     }
 
     public void changeFeedback(Long feedback_id, NewFeedbackDTO newFeedbackDTO){
         Feedback feedback = feedbackRepo.findById(feedback_id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        if(!feedback.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
+        if(!feedback.getEvent().getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
             throw new AccessDeniedException("You are not allowed to change this feedback");
 
         feedback.setText(newFeedbackDTO.text());
@@ -75,15 +79,24 @@ public class FeedbackService {
                 .collect(Collectors.toList());
     }
 
+    public List<FeedbackInfoDTO> getAllByEventId(Long eventId) {
+        return feedbackRepo.findAllByEventId(eventId)
+                .stream()
+                .map(feedbackInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
+
     public List<FeedbackInfoDTO> getAllByCurrentUserWrite() {
-        return feedbackRepo.findAllByCreator(userService.getCurrentUser())
+        return feedbackRepo.findAllByUserId(userService.getCurrentUser().getId())
                 .stream()
                 .map(feedbackInfoDTOMapper)
                 .collect(Collectors.toList());
     }
 
     public List<FeedbackInfoDTO> getAllByCurrentUserReceive() {
-        return feedbackRepo.findAllByUserId(userService.getCurrentUser().getId())
+        List<Event> events = eventService.getAllByCreatorId(userService.getCurrentUser().getId());
+        return feedbackRepo.findAllByEventIn(events)
                 .stream()
                 .map(feedbackInfoDTOMapper)
                 .collect(Collectors.toList());

@@ -215,4 +215,7 @@ public class EventService {
         return eventUserStatuses.stream().map(eventUserStatus -> getEventInfo(eventUserStatus.getEventId())).toList();
     }
 
+    public List<Event> getAllByCreatorId(Long id) {
+        return eventRepo.findAllByCreatorId(id);
+    }
 }

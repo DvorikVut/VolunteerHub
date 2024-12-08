@@ -1,7 +1,7 @@
 package my.pastebin.Feedback.dto;
 
 public record NewFeedbackDTO(
-        Long userToRateId,
+        Long eventId,
         String text,
         Integer rating
 ) {

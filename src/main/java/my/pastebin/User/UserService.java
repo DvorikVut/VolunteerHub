@@ -67,7 +67,7 @@ public class UserService {
      * @param feedback the feedback given to the user's creation
      */
     public void calculatePointsAsCreator(Feedback feedback) {
-        User user = feedback.getCreator();
+        User user = feedback.getEvent().getCreator();
         int feedbackCount = feedbackService.getQuantityOfFeedbacks(user);
         user.setPointAsCreator((user.getPointAsCreator() * feedbackCount + feedback.getRating()) / (feedbackCount + 1));
         userRepo.save(user);

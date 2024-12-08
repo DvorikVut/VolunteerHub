@@ -11,6 +11,7 @@ public record FeedbackInfoDTO(
         String text,
         Integer rating,
         UserInfo creator,
+        Long eventId,
         UserInfo target,
         LocalDateTime createdAt
 ) {
