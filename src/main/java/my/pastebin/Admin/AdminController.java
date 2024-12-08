@@ -51,7 +51,7 @@ public class AdminController {
 
     @Operation(summary = "Change an event")
     @PutMapping("/event/{eventId}")
-    public ResponseEntity<String> changeEvent(@PathVariable Long eventId, NewEventDTO newEventDTO) {
+    public ResponseEntity<String> changeEvent(@PathVariable Long eventId, @RequestBody  NewEventDTO newEventDTO) {
         eventService.change(eventId, newEventDTO);
         return ResponseEntity.ok("Event updated");
     }
@@ -89,11 +89,10 @@ public class AdminController {
 
     @Operation(summary = "Change a user profile")
     @PutMapping("/user/{userId}")
-    public ResponseEntity<?> changeUserProfile(@PathVariable Long userId, UpdateUserAdminDTO updateUserAdminDTO) {
+    public ResponseEntity<?> changeUserProfile(@PathVariable Long userId, @RequestBody UpdateUserAdminDTO updateUserAdminDTO) {
         userService.changeUserProfile(userId, updateUserAdminDTO);
         return ResponseEntity.ok("User profile updated");
     }
-
 
     @Operation(summary = "Get all feedbacks")
     @GetMapping("/feedbacks")
@@ -109,7 +108,7 @@ public class AdminController {
 
     @Operation(summary = "Change a feedback")
     @PutMapping("/feedback/{id}")
-    public ResponseEntity<?> changeFeedback(@PathVariable Long id, NewFeedbackDTO changeFeedbackDTO) {
+    public ResponseEntity<?> changeFeedback(@PathVariable Long id, @RequestBody NewFeedbackDTO changeFeedbackDTO) {
         feedbackService.changeFeedback(id, changeFeedbackDTO);
         return ResponseEntity.ok("Feedback changed");
     }
