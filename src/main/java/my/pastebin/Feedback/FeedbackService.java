@@ -43,6 +43,8 @@ public class FeedbackService {
                 .creator(userService.getCurrentUser())
                 .createdAt(LocalDateTime.now())
                 .build();
+
+        userService.calculatePointsAsCreator(feedback);
         return feedbackRepo.save(feedback);
     }
 
