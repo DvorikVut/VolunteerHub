@@ -25,8 +25,8 @@ public class Feedback {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @JoinColumn(name = "creator_id", referencedColumnName = "id")
+    private User creator;
 
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")

@@ -40,7 +40,7 @@ public class FeedbackService {
                 .text(newFeedbackDTO.text())
                 .rating(newFeedbackDTO.rating())
                 .event(eventService.getById(newFeedbackDTO.eventId()))
-                .user(userService.getCurrentUser())
+                .creator(userService.getCurrentUser())
                 .createdAt(LocalDateTime.now())
                 .build();
         return feedbackRepo.save(feedback);
@@ -88,7 +88,7 @@ public class FeedbackService {
 
 
     public List<FeedbackInfoDTO> getAllByCurrentUserWrite() {
-        return feedbackRepo.findAllByUserId(userService.getCurrentUser().getId())
+        return feedbackRepo.findAllByCreatorId(userService.getCurrentUser().getId())
                 .stream()
                 .map(feedbackInfoDTOMapper)
                 .collect(Collectors.toList());
@@ -103,6 +103,6 @@ public class FeedbackService {
     }
 
     public Integer getQuantityOfFeedbacks(User user) {
-        return feedbackRepo.findAllByUserId(user.getId()).size();
+        return feedbackRepo.findAllByCreatorId(user.getId()).size();
     }
 }
