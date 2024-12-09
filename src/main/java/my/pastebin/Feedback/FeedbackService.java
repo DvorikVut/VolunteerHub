@@ -55,7 +55,7 @@ public class FeedbackService {
 
     public void changeFeedback(Long feedback_id, NewFeedbackDTO newFeedbackDTO){
         Feedback feedback = feedbackRepo.findById(feedback_id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        if(!feedback.getEvent().getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
+        if(!feedback.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
             throw new AccessDeniedException("You are not allowed to change this feedback");
 
         feedback.setText(newFeedbackDTO.text());
