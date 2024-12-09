@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import my.pastebin.Chat.MessageService;
 import my.pastebin.Chat.dto.NewMessageDTO;
+import my.pastebin.User.User;
+import my.pastebin.User.dto.UserInfo;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -66,7 +68,7 @@ public class MessageController {
 
     @Operation(summary = "Get all UserIds who have written messages for the current user")
     @GetMapping("/writers")
-    public ResponseEntity<List<Long>> getWriters(){
+    public ResponseEntity<List<UserInfo>> getWriters(){
         return ResponseEntity.ok(messageService.getWriters());
     }
 }
