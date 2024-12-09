@@ -58,7 +58,7 @@ public class FeedBackController {
 
     @Operation(summary = "Change a feedback")
     @PutMapping("/{id}")
-    public ResponseEntity<?> changeFeedback(@PathVariable Long id, NewFeedbackDTO newFeedbackDTO) {
+    public ResponseEntity<?> changeFeedback(@PathVariable Long id, @RequestBody NewFeedbackDTO newFeedbackDTO) {
         feedbackService.changeFeedback(id, newFeedbackDTO);
         return ResponseEntity.ok("Feedback changed");
     }
