@@ -15,7 +15,7 @@ public class UserInfoDTOMapper implements Function<User, UserInfo> {
                 .surname(user.getSurname())
                 .email(user.getEmail())
                 .points(user.getPoints())
-                .pointAsCreator(user.getPointAsCreator())
+                .pointsAsCreator(user.getPointsAsCreator())
                 .imageURL(user.getImageURL())
                 .role(user.getRole())
                 .build();

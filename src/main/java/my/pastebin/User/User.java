@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Integer points;
-    private Float pointAsCreator;
+    private Float pointsAsCreator;
     private String imageURL;
     private String s3ImageKey;
 

@@ -33,7 +33,7 @@ public class AuthService {
                 .role(Role.USER)
                 .password(passwordEncoder.encode(request.password()))
                 .points(0)
-                .pointAsCreator(0.0f)
+                .pointsAsCreator(0.0f)
                 .build();
         userRepo.save(user);
 

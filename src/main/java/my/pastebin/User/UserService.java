@@ -8,7 +8,6 @@ import my.pastebin.User.dto.UpdateUserAdminDTO;
 import my.pastebin.User.dto.UpdateUserDTO;
 import my.pastebin.User.dto.UserInfo;
 import my.pastebin.User.dto.UserInfoDTOMapper;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,7 +68,7 @@ public class UserService {
     public void calculatePointsAsCreator(Feedback feedback) {
         User user = feedback.getEvent().getCreator();
         int feedbackCount = feedbackService.getQuantityOfFeedbacks(user);
-        user.setPointAsCreator((user.getPointAsCreator() * feedbackCount + feedback.getRating()) / (feedbackCount + 1));
+        user.setPointsAsCreator((user.getPointsAsCreator() * feedbackCount + feedback.getRating()) / (feedbackCount + 1));
         userRepo.save(user);
     }
 
@@ -122,7 +121,7 @@ public class UserService {
         user.setName(updateUserAdminDTO.name());
         user.setSurname(updateUserAdminDTO.surname());
         user.setPoints(updateUserAdminDTO.points());
-        user.setPointAsCreator(updateUserAdminDTO.pointsAsCreator());
+        user.setPointsAsCreator(updateUserAdminDTO.pointsAsCreator());
         userRepo.save(user);
     }
 

@@ -10,7 +10,7 @@ public record UserInfo(
         String surname,
         String email,
         Integer points,
-        Float pointAsCreator,
+        Float pointsAsCreator,
         String imageURL,
         Role role
 ) {
