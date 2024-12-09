@@ -33,7 +33,7 @@ public class EventInfoDTOMapper implements Function<Event,EventInfoDTO> {
                 .city(event.getCity())
                 .address(event.getAddress())
                 .price(event.getPrice())
-                .occupiedQuantity(eventUserStatusService.getAllByUserId(event.getId()).stream().filter(e -> e.getStatus().equals(Status.CONFIRMED)).count())
+                .occupiedQuantity(eventUserStatusService.getAllByEventId(event.getId()).stream().filter(e -> e.getStatus().equals(Status.CONFIRMED)).count())
                 .creator(userInfoDTOMapper.apply(event.getCreator()))
                 .imageURL(event.getImageURL())
                 .coordinates(event.getCoordinates())

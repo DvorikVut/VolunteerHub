@@ -192,4 +192,8 @@ public class EventUserStatusService {
     public boolean checkIfUserRoleIs(User user, Role role){
         return user.getRole().equals(role);
     }
+
+    public List<EventUserStatus> getAllByEventId(Long id) {
+        return eventUserStatusRepo.findAllByEventId(id);
+    }
 }
