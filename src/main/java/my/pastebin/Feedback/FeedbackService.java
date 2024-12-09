@@ -43,9 +43,8 @@ public class FeedbackService {
                 .creator(userService.getCurrentUser())
                 .createdAt(LocalDateTime.now())
                 .build();
-        Feedback newFeedback = feedbackRepo.save(feedback);
-        userService.calculatePointsAsCreator(newFeedback);
-        return newFeedback;
+        userService.calculatePointsAsCreator(feedback);
+        return feedbackRepo.save(feedback);
     }
 
     public void deleteFeedback(Long id) {
