@@ -112,4 +112,11 @@ public class FeedbackService {
     public Integer getQuantityOfFeedbacks(User user) {
         return feedbackRepo.findAllByCreatorId(user.getId()).size();
     }
+
+    public List<FeedbackInfoDTO> getAllByTargetId(Long targetId) {
+        return feedbackRepo.findAllByEventIn(eventService.getAllByCreatorId(targetId))
+                .stream()
+                .map(feedbackInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
 }
