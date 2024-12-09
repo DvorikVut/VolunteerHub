@@ -8,6 +8,7 @@ import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Exceptions.ResourceNotFoundException;
 import my.pastebin.User.Role;
 import my.pastebin.User.UserService;
+import my.pastebin.User.dto.UserInfo;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -79,10 +80,10 @@ public class MessageService {
         save(message);
     }
 
-    public List<Long> getWriters() {
+    public List<UserInfo> getWriters() {
         return messageRepository.findDistinctByRecipientId(userService.getCurrentUser().getId())
                 .stream()
-                .map(Message::getSenderId)
+                .map(message -> userService.getInfoById(message.getSenderId()))
                 .toList();
     }
 }
