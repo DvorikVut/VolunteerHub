@@ -46,10 +46,10 @@ public class FeedbackService {
         return feedbackRepo.save(feedback);
     }
 
-    public void deleteFeedback(Long id)throws AccessDeniedException {
+    public void deleteFeedback(Long id) {
         Feedback feedback = feedbackRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        if(!feedback.getEvent().getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
-            throw new AccessDeniedException("You are not allowed to delete this feedback");
+        if(!feedback.getEvent().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
+            throw new NotAuthorizedException("You are not allowed to delete this feedback");
         feedbackRepo.deleteById(id);
     }
 
