@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/api/message")
@@ -19,49 +21,52 @@ public class MessageController {
 
     @Operation(summary = "Create a new message")
     @PostMapping
-    public ResponseEntity<?> createMessage(@RequestBody NewMessageDTO newMessageDTO){
+    public ResponseEntity<String> createMessage(@RequestBody NewMessageDTO newMessageDTO){
         messageService.createMessage(newMessageDTO);
         return ResponseEntity.ok("Message was send successfully");
     }
 
     @Operation(summary = "Get a message by its ID")
     @GetMapping("/{messageId}")
-    public ResponseEntity<?> getById(@PathVariable Long messageId){
+    public ResponseEntity<Message> getById(@PathVariable Long messageId){
         return ResponseEntity.ok(messageService.getById(messageId));
     }
 
     @Operation(summary = "Get all messages sent by a user")
     @GetMapping("/{senderId}")
-    public ResponseEntity<?> getBySenderId(@PathVariable Long senderId){
+    public ResponseEntity<List<Message>> getBySenderId(@PathVariable Long senderId){
         return ResponseEntity.ok(messageService.getAllBySenderId(senderId));
     }
 
     @Operation(summary = "Get all messages received by a user")
     @GetMapping("/{receiverId}")
-    public ResponseEntity<?> getByReceiverId(@PathVariable Long receiverId){
+    public ResponseEntity<List<Message>> getByReceiverId(@PathVariable Long receiverId){
         return ResponseEntity.ok(messageService.getAllByReceiverId(receiverId));
     }
 
     @Operation(summary = "Delete a message")
     @DeleteMapping("/{messageId}")
-    public ResponseEntity<?> deleteMessage(@PathVariable Long messageId){
+    public ResponseEntity<String> deleteMessage(@PathVariable Long messageId){
         messageService.delete(messageService.getById(messageId));
         return ResponseEntity.ok("Message was deleted successfully");
     }
 
     @Operation(summary = "Get all messages between two users")
     @GetMapping("/{senderId}/{receiverId}")
-    public ResponseEntity<?> getBySenderIdAndReceiverId(@PathVariable Long senderId, @PathVariable Long receiverId){
+    public ResponseEntity<List<Message>> getBySenderIdAndReceiverId(@PathVariable Long senderId, @PathVariable Long receiverId){
         return ResponseEntity.ok(messageService.getAllBySenderIdAndReceiverId(senderId, receiverId));
     }
 
-    //TODO change isReadFlag
-    //TODO get all UserIds who have written feedbacks for the current user
-
     @Operation(summary = "Change the isRead flag of a message")
     @PutMapping("/{messageId}/read")
-    public ResponseEntity<?> markAsRead(@PathVariable Long messageId){
+    public ResponseEntity<String> markAsRead(@PathVariable Long messageId){
         messageService.markAsReadById(messageId);
         return ResponseEntity.ok("Message was marked as read");
+    }
+
+    @Operation(summary = "Get all UserIds who have written messages for the current user")
+    @GetMapping("/writers")
+    public ResponseEntity<List<Long>> getWriters(){
+        return ResponseEntity.ok(messageService.getWriters());
     }
 }

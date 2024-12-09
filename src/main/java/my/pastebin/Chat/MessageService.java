@@ -79,4 +79,10 @@ public class MessageService {
         save(message);
     }
 
+    public List<Long> getWriters() {
+        return messageRepository.findDistinctByRecipientId(userService.getCurrentUser().getId())
+                .stream()
+                .map(Message::getSenderId)
+                .toList();
+    }
 }
