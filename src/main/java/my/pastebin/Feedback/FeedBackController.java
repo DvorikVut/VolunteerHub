@@ -52,7 +52,7 @@ public class FeedBackController {
 
     @Operation(summary = "Create a new feedback")
     @PostMapping
-    public ResponseEntity<?> createFeedback(NewFeedbackDTO newFeedbackDTO){
+    public ResponseEntity<?> createFeedback(@RequestBody NewFeedbackDTO newFeedbackDTO){
         return ResponseEntity.ok(feedbackService.createFeedback(newFeedbackDTO));
     }
 
