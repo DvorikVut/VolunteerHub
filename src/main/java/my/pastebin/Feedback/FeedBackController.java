@@ -69,4 +69,10 @@ public class FeedBackController {
         feedbackService.deleteFeedback(id);
         return ResponseEntity.ok("Feedback deleted");
     }
+
+    @Operation(summary = "Get a feedback by current user and feedback ID")
+    @GetMapping("/my/{id}")
+    public ResponseEntity<?> getFeedbackByCurrentUserAndFeedbackId(@PathVariable Long id) {
+        return ResponseEntity.ok(feedbackService.getInfoByCurrentUserAndEventId(id));
+    }
 }

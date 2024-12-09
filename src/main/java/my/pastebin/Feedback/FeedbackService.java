@@ -72,6 +72,13 @@ public class FeedbackService {
         return feedbackInfoDTOMapper.apply(feedbackRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found")));
     }
 
+    public List<FeedbackInfoDTO> getInfoByCurrentUserAndEventId(Long eventId) {
+        return feedbackRepo.findAllByCreatorIdAndEventId(userService.getCurrentUser().getId(), eventId)
+                .stream()
+                .map(feedbackInfoDTOMapper)
+                .collect(Collectors.toList());
+    }
+
     public List<FeedbackInfoDTO> getAll() {
         return feedbackRepo.findAll()
                 .stream()

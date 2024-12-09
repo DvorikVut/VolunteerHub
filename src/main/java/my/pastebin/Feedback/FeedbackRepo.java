@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedbackRepo extends JpaRepository<Feedback, Long> {
     List<Feedback> findAllByCreatorId(Long creatorId);
     List<Feedback> findAllByEventId(Long eventId);
     List<Feedback> findAllByEventIn(List<Event> events);
+    List<Feedback> findAllByCreatorIdAndEventId(Long id, Long eventId);
 }
