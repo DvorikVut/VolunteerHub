@@ -54,4 +54,14 @@ public class MessageController {
     public ResponseEntity<?> getBySenderIdAndReceiverId(@PathVariable Long senderId, @PathVariable Long receiverId){
         return ResponseEntity.ok(messageService.getAllBySenderIdAndReceiverId(senderId, receiverId));
     }
+
+    //TODO change isReadFlag
+    //TODO get all UserIds who have written feedbacks for the current user
+
+    @Operation(summary = "Change the isRead flag of a message")
+    @PutMapping("/{messageId}/read")
+    public ResponseEntity<?> markAsRead(@PathVariable Long messageId){
+        messageService.markAsReadById(messageId);
+        return ResponseEntity.ok("Message was marked as read");
+    }
 }

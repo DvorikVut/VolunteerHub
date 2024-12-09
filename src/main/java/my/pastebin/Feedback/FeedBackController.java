@@ -75,4 +75,5 @@ public class FeedBackController {
     public ResponseEntity<?> getFeedbackByCurrentUserAndFeedbackId(@PathVariable Long id) {
         return ResponseEntity.ok(feedbackService.getInfoByCurrentUserAndEventId(id));
     }
+
 }

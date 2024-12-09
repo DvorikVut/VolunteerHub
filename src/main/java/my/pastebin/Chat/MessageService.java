@@ -69,4 +69,14 @@ public class MessageService {
     public List<Message> getAllBySenderIdAndReceiverId(Long senderId, Long receiverId) {
         return messageRepository.findAllBySenderIdAndRecipientId(senderId, receiverId);
     }
+
+    public void markAsReadById(Long messageId) {
+        Message message = getById(messageId);
+        if(!message.getRecipientId().equals(userService.getCurrentUser().getId())){
+            throw new NotAuthorizedException("You are not allowed to mark this message as read");
+        }
+        message.setIsRead(true);
+        save(message);
+    }
+
 }
