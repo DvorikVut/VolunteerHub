@@ -97,14 +97,8 @@ public class UserService {
                 .toList();
     }
 
-    public void update(Long id, UpdateUserDTO updateUserDTO, MultipartFile image){
+    public void update(Long id, UpdateUserDTO updateUserDTO){
         User user = getUserById(id);
-        if(image != null){
-            String key = s3Service.uploadImage(image);
-            user.setS3ImageKey(key);
-            user.setImageURL(s3Service.getPublicUrl(key));
-        }
-
         user.setName(updateUserDTO.name());
         user.setSurname(updateUserDTO.surname());
         userRepo.save(user);
@@ -130,5 +124,12 @@ public class UserService {
             throw new RuntimeException("You are not allowed to delete users");
         }
         userRepo.deleteById(id);
+    }
+
+    public void uploadImage(Long userId, MultipartFile image) {
+        User user = getUserById(userId);
+        String key = s3Service.uploadImage(image);
+        user.setImageURL(s3Service.getPublicUrl(key));
+        userRepo.save(user);
     }
 }
