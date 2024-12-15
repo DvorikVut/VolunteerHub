@@ -75,6 +75,11 @@ public class UserService {
     public void calculatePointsAsCreatorAfterDelete(Feedback feedback) {
         User user = feedback.getEvent().getCreator();
         int feedbackCount = feedbackService.getQuantityOfFeedbacks(user);
+        if(feedbackCount == 1) {
+            user.setPointsAsCreator(0f);
+            userRepo.save(user);
+            return;
+        }
         user.setPointsAsCreator((user.getPointsAsCreator() * feedbackCount - feedback.getRating()) / (feedbackCount - 1));
         userRepo.save(user);
     }
