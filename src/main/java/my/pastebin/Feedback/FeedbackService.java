@@ -51,6 +51,8 @@ public class FeedbackService {
         Feedback feedback = feedbackRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
         if(!feedback.getCreator().getId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN))
             throw new NotAuthorizedException("You are not allowed to delete this feedback");
+
+        userService.calculatePointsAsCreatorAfterDelete(feedback);
         feedbackRepo.deleteById(id);
     }
 
