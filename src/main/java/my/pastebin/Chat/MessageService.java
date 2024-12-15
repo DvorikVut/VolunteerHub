@@ -86,4 +86,13 @@ public class MessageService {
                 .map(message -> userService.getInfoById(message.getSenderId()))
                 .toList();
     }
+
+    public void change(Long messageId, String newContent) {
+        Message message = getById(messageId);
+        if(!message.getSenderId().equals(userService.getCurrentUser().getId()) && !userService.getCurrentUser().getRole().equals(Role.ADMIN)){
+            throw new NotAuthorizedException("You are not allowed to change this message");
+        }
+        message.setContent(newContent);
+        save(message);
+    }
 }

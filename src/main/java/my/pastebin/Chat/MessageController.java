@@ -71,4 +71,11 @@ public class MessageController {
     public ResponseEntity<List<UserInfo>> getWriters(){
         return ResponseEntity.ok(messageService.getWriters());
     }
+
+    @Operation(summary = "change message content")
+    @PutMapping("/{messageId}/change")
+    public ResponseEntity<String> changeMessage(@PathVariable Long messageId, @RequestBody String newContent){
+        messageService.change(messageId, newContent);
+        return ResponseEntity.ok("Message was changed successfully");
+    }
 }
