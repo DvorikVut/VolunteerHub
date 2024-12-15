@@ -107,6 +107,9 @@ public class EventService {
         if(event.getS3ImageKey() != null)
             s3Service.delete(event.getS3ImageKey());
 
+        List<EventUserStatus> eventUserStatuses = eventUserStatusService.getAllByEventId(id);
+        eventUserStatuses.forEach(eventUserStatusService::delete);
+
         eventRepo.delete(event);
     }
 

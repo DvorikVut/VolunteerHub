@@ -196,4 +196,8 @@ public class EventUserStatusService {
     public List<EventUserStatus> getAllByEventId(Long id) {
         return eventUserStatusRepo.findAllByEventId(id);
     }
+
+    public void delete(EventUserStatus eventUserStatus) {
+        eventUserStatusRepo.delete(eventUserStatus);
+    }
 }
