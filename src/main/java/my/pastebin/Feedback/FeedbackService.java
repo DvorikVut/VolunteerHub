@@ -63,8 +63,8 @@ public class FeedbackService {
 
         feedback.setText(newFeedbackDTO.text());
         feedback.setRating(newFeedbackDTO.rating());
-        feedbackRepo.save(feedback);
-        userService.calculatePointsAsCreatorAfterChange(feedback);
+        Feedback newFeedback = feedbackRepo.save(feedback);
+        userService.calculatePointsAsCreatorAfterChange(newFeedback);
     }
 
     public Feedback getById(Long id) {
