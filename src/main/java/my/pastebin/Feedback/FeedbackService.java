@@ -127,7 +127,7 @@ public class FeedbackService {
                .collect(Collectors.toList());
     }
 
-    public List<Feedback> getAllByUserReceive() {
-        return feedbackRepo.findAllByEventCreatorId(userService.getCurrentUser().getId());
+    public List<Feedback> getAllByUserReceive(Long id) {
+        return feedbackRepo.findAllByEventCreatorId(id);
     }
 }

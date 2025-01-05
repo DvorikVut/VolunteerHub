@@ -75,7 +75,7 @@ public class UserService {
 
     public void calculatePointsAsCreatorAfterChange(Feedback feedback) {
         User user = feedback.getEvent().getCreator();
-        List<Feedback> feedbacks = feedbackService.getAllByUserReceive();
+        List<Feedback> feedbacks = feedbackService.getAllByUserReceive(user.getId());
         float sum = 0;
         for(Feedback f : feedbacks) {
             sum += f.getRating();
