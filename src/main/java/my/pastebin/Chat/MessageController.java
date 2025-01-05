@@ -72,6 +72,12 @@ public class MessageController {
         return ResponseEntity.ok(messageService.getWriters());
     }
 
+    @Operation(summary = "Get all UserIds who have received messages from the current user")
+    @GetMapping("/receivers")
+    public ResponseEntity<List<UserInfo>> getReceivers(){
+        return ResponseEntity.ok(messageService.getReceivers());
+    }
+
     @Operation(summary = "change message content")
     @PutMapping("/{messageId}/change")
     public ResponseEntity<String> changeMessage(@PathVariable Long messageId, @RequestBody String newContent){

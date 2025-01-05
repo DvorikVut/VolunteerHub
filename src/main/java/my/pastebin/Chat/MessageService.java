@@ -95,4 +95,11 @@ public class MessageService {
         message.setContent(newContent);
         save(message);
     }
+
+    public List<UserInfo> getReceivers() {
+        return messageRepository.findDistinctBySenderId(userService.getCurrentUser().getId())
+                .stream()
+                .map(message -> userService.getInfoById(message.getRecipientId()))
+                .toList();
+    }
 }
