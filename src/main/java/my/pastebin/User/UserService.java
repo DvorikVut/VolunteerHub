@@ -72,6 +72,19 @@ public class UserService {
         userRepo.save(user);
     }
 
+
+    public void calculatePointsAsCreatorAfterChange(Feedback feedback) {
+        User user = feedback.getEvent().getCreator();
+        List<Feedback> feedbacks = feedbackService.getAllByUserReceive();
+        float sum = 0;
+        for(Feedback f : feedbacks) {
+            sum += f.getRating();
+        }
+        user.setPointsAsCreator(sum / feedbacks.size());
+        userRepo.save(user);
+    }
+
+
     public void calculatePointsAsCreatorAfterDelete(Feedback feedback) {
         User user = feedback.getEvent().getCreator();
         int feedbackCount = feedbackService.getQuantityOfFeedbacks(user);
