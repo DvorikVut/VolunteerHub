@@ -7,6 +7,7 @@ import my.pastebin.Chat.dto.NewMessageDTO;
 import my.pastebin.Exceptions.NotAuthorizedException;
 import my.pastebin.Exceptions.ResourceNotFoundException;
 import my.pastebin.User.Role;
+import my.pastebin.User.User;
 import my.pastebin.User.UserService;
 import my.pastebin.User.dto.UserInfo;
 import org.springframework.stereotype.Service;
@@ -80,10 +81,18 @@ public class MessageService {
         save(message);
     }
 
-    public List<UserInfo> getWriters() {
-        return messageRepository.findDistinctByRecipientId(userService.getCurrentUser().getId())
+    public List<UserInfo> getWritersAndReceivers() {
+        List<User> users = new java.util.ArrayList<>(messageRepository.findDistinctBySenderId(userService.getCurrentUser().getId())
                 .stream()
-                .map(message -> userService.getInfoById(message.getSenderId()))
+                .map(message -> userService.getUserById(message.getRecipientId()))
+                .toList());
+        users.addAll(messageRepository.findDistinctByRecipientId(userService.getCurrentUser().getId())
+                .stream()
+                .map(message -> userService.getUserById(message.getSenderId()))
+                .toList());
+        return users.stream()
+                .distinct()
+                .map(user -> userService.getInfoById(user.getId()))
                 .toList();
     }
 

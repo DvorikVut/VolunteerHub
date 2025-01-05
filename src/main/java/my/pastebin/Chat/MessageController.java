@@ -69,7 +69,7 @@ public class MessageController {
     @Operation(summary = "Get all UserIds who have written messages for the current user")
     @GetMapping("/writers")
     public ResponseEntity<List<UserInfo>> getWriters(){
-        return ResponseEntity.ok(messageService.getWriters());
+        return ResponseEntity.ok(messageService.getWritersAndReceivers());
     }
 
     @Operation(summary = "Get all UserIds who have received messages from the current user")
